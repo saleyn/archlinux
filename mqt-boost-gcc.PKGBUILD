@@ -5,8 +5,9 @@
 # Contributor: Giovanni Scafora <giovanni@archlinux.org>
 # Contributor: Kritoke <kritoke@gamebox.net>
 # Contributor: Luca Roccia <little_rock@users.sourceforge.net>
+# Contributor: Serge Aleynikov <saleyn@gmail.com>
 
-toolset=gcc
+toolset=${TOOLCHAIN:-gcc}
 TOOLSET=$(echo ${toolset} | tr '[:lower:]' '[:upper:]')
 pkgbase=boost
 pkgname=mqt-boost-${toolset}
@@ -26,7 +27,10 @@ sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
           '61c614e9feaf4b6e12019e7ae137c77321fc65d1'
           '3cbc47339dafb9055f75227987bb74f78c1d957c')
 
+install=${pkgname}.install
+
 prepare() {
+    echo "Preparing ${pkgname} build"
     export _stagedir="${srcdir}/stagedir"
     cd ${pkgbase}_${_boostver}
 
@@ -39,7 +43,8 @@ prepare() {
     echo "using python : 3.3 : /usr/bin/python3 : /usr/include/python3.3m : /usr/lib ;" \
         >> ./tools/build/v2/user-config.jam
 
-    # Add boost/process links
+    # Add boost/process
+    echo "Adding boost/process"
     rm -fr boost/process libs/process
     mv -vf ../boost-process-master/boost/* boost/
     mv -vf ../boost-process-master/libs/*  libs/
@@ -47,7 +52,7 @@ prepare() {
 
 build() {
     local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
-    JOBS=${JOBS:-$(awk '/MHz/{s++} END{print s-1}' /proc/cpuinfo)}
+    JOBS=${JOBS:- -j$(awk '/MHz/{s++} END{print s-1}' /proc/cpuinfo)}
 
     cd ${pkgbase}_${_boostver}
 
@@ -60,7 +65,7 @@ build() {
     _bindir="bin.linuxx86"
     [[ "${CARCH}" = "x86_64" ]] && _bindir="bin.linuxx86_64"
 
-    install -dm755 "${_stagedir}"/bin
+    install -dm755 "${_stagedir}"/{bin,include,lib}
     install tools/build/v2/engine/${_bindir}/b2 "${_stagedir}"/bin/b2
 
     # default "minimal" install: "release link=shared,static
@@ -69,6 +74,20 @@ build() {
     # and installs includes in /usr/include/boost.
     # --layout=system no longer adds the -mt suffix for multi-threaded libs.
     # install to ${_stagedir} in preparation for split packaging
+    echo "${_stagedir}/bin/b2 \
+      variant=release \
+      debug-symbols=off \
+      threading=multi \
+      runtime-link=shared \
+      link=shared \
+      toolset=${toolset} \
+      python=2.7 \
+      cflags="${CPPFLAGS} ${CFLAGS} -Wunused-local-typedefs -O3" linkflags="${LDFLAGS}" \
+      --layout=system \
+      --without-mpi \
+      --prefix="${_stagedir}" \
+      ${JOBS} \
+      install 2>&1 | tee ../MMM.log"
     "${_stagedir}"/bin/b2 \
       variant=release \
       debug-symbols=off \
@@ -93,20 +112,22 @@ package() {
                 'python2: for python2 bindings'
                 'boost-build: to use boost jam for building your project.')
 
-    DIR=opt/pkg/${pkgbase}/${pkgver}
+    DST_DIR=opt/pkg/${pkgbase}
+    INSTALL_DIR="${DST_DIR}"/${pkgver}
 
-    install -dm755 "${pkgdir}"/${DIR}/${TOOLSET}
-    install -dm755 "${pkgdir}"/${DIR}/${TOOLSET}/bin
-    install -dm755 "${pkgdir}"/${DIR}/${TOOLSET}/lib
-    cp -a "${_stagedir}"/include "${pkgdir}"/${DIR}
-    cp -a "${_stagedir}"/bin "${pkgdir}"/${DIR}/${TOOLSET}
-    cp -a "${_stagedir}"/lib "${pkgdir}"/${DIR}/${TOOLSET}
+    install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/include
+    install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/${TOOLSET}
+    install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/${TOOLSET}/{bin,lib}
+    cp -a "${_stagedir}"/include "${pkgdir}"/"${INSTALL_DIR}"
+    for d in bin lib; do
+        cp -a "${_stagedir}"/$d "${pkgdir}"/"${INSTALL_DIR}"
+    done
 
-    find "${_stagedir}"/lib -name \*.a -exec mv {} "${pkgdir}"/${DIR}/${TOOLSET}/lib \;
+    #find "${_stagedir}"/lib -name \*.a -exec mv {} "${pkgdir}"/${DIR}/${TOOLSET}/lib \;
 
     install -Dm644 "${srcdir}/"${pkgbase}_${_boostver}/LICENSE_1_0.txt \
-        "${pkgdir}"/${DIR}/share/licenses/boost/LICENSE_1_0.txt
+        "${pkgdir}"/"${INSTALL_DIR}/share/licenses/boost/LICENSE_1_0.txt"
 
-    cd "${pkgdir}"/${DIR}/..
+    cd "${pkgdir}"/"${DST_DIR}"
     ln -s ${pkgver} current
 }
