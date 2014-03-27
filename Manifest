@@ -1,0 +1,15 @@
+# This files defines the build/installation order
+#================================================
+#
+# /usr installed packages
+#
+usr/cfengine.PKGBUILD
+usr/tokyocabinet.PKGBUILD
+usr/double-conversion.PKGBUILD
+usr/google-gflags.PKGBUILD
+#
+# /opt/pkg installed packages
+#
+mqt-boost-gcc.PKGBUILD
+mqt-thrift-gcc.PKGBUILD
+mqt-folly-gcc.PKGBUILD

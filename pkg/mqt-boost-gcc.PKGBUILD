@@ -8,7 +8,7 @@
 # Contributor: Serge Aleynikov <saleyn@gmail.com>
 
 toolset=${TOOLCHAIN:-gcc}
-TOOLSET=$(echo ${toolset} | tr '[:lower:]' '[:upper:]')
+TOOLSET=$(tr '[:lower:]' '[:upper:]' <<< ${toolset})
 pkgbase=boost
 pkgname=mqt-boost-${toolset}
 pkgver=1.55.0
@@ -52,7 +52,7 @@ prepare() {
 
 build() {
     local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
-    JOBS=${JOBS:- -j$(awk '/MHz/{s++} END{print s-1}' /proc/cpuinfo)}
+    JOBS=${JOBS:- -j$(nproc)}
 
     cd ${pkgbase}_${_boostver}
 
@@ -87,7 +87,7 @@ build() {
       --without-mpi \
       --prefix="${_stagedir}" \
       ${JOBS} \
-      install 2>&1 | tee ../MMM.log"
+      install
     "${_stagedir}"/bin/b2 \
       variant=release \
       debug-symbols=off \
@@ -101,7 +101,7 @@ build() {
       --without-mpi \
       --prefix="${_stagedir}" \
       ${JOBS} \
-      install 2>&1 | tee ../MMM.log
+      install
 }
 
 package() {

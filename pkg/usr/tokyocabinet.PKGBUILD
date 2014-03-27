@@ -6,7 +6,7 @@ pkgname=tokyocabinet
 pkgver=1.4.48
 pkgrel=1
 pkgdesc="a modern implementation of DBM"
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url="http://fallabs.com/tokyocabinet/"
 license=('LGPL')
 makedepends=('gcc>=3.1' 'make' 'pkgconfig')

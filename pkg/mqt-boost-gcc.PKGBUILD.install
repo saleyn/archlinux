@@ -1,4 +1,4 @@
-ENV_DIR="${pkgdir}"/opt/env/Boost
+ENV_DIR="${pkgdir}"/opt/env/prod/Boost
 INSTALL_DIR="${pkgdir}"/opt/pkg/boost/current
 
 post_install() {
