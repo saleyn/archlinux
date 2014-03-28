@@ -45,11 +45,11 @@ Creating a package requires to:
 * Validate the package spec file by running:
   ``$ ./install.sh -s mqt-PackageName``
 * By default post-installation involves running a script derived
-  from ``template.install``. This script creates appropriate links
+  from ``util/template.install``. This script creates appropriate links
   in the ``/opt/env/prod`` directory. If the default behavior is not
   sufficient, for custom post-installation create a script
   ``pkg/mqt-PackageName.install`` by running:
-  ``$ ./gen-install.sh [mqt-]PackageName EnvDirName``, where
+  ``$ util/gen-install.sh [mqt-]PackageName EnvDirName``, where
   ``EnvDirName`` is the name used in ``/opt/env/prod/EnvDirName``.
   The name of this post-installation script is referenced in the PKGBUILD
   by the ``install=[mqt-]PackageName.install`` assignment.
