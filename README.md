@@ -1,5 +1,9 @@
 ## Collection of Archlinux PKGBUILDs ##
 
+### Binary Packages ###
+
+See: https://github.com/saleyn/archlinux-pkg
+
 ### Building ###
 
 In order to build a package ``mqt-boost-gcc``, run the following command:
