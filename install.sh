@@ -80,8 +80,8 @@ if [ -z "$(sed -n "$FILTER" Manifest)" ]; then
 fi
 
 if [ $LISTONLY -eq 1 ]; then
-  printf "%-40s %-25s %s\n" PackageName EnvDirName Installed
-  printf "%-40s %-25s %s\n" =========== ========== =========
+  printf "%-40s %-15s %-25s %s\n" PackageName EnvDirName InstalledPkg Revision
+  printf "%-40s %-15s %-25s %s\n" =========== ========== ============ ========
 fi
 
 sed -n "$FILTER" Manifest | \
@@ -112,7 +112,7 @@ sed -n "$FILTER" Manifest | \
     fi
 
     if [ $LISTONLY -eq 1 ]; then
-      printf "%-40s %-25s %s\n" "$s" "$dirname" "$(pacman -Q $PKGNAME 2>/dev/null)"
+      printf "%-40s %-15s %-25s %s\n" "$s" "$dirname" $(pacman -Q $PKGNAME 2>/dev/null)
       continue
     fi
 

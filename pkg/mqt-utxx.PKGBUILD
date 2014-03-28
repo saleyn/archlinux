@@ -10,7 +10,7 @@ TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
 _pkgsfx=-${_toolset}
 pkgbase=utxx
 pkgname=mqt-${pkgbase}${_pkgsfx}
-pkgver=272.c5bf79f
+pkgver=1.1
 pkgrel=1
 pkgdesc='utxx is a collection of C++ utility components'
 arch=('x86_64')
@@ -25,7 +25,7 @@ install=mqt-${pkgbase}.install
 
 pkgver() {
   cd utxx
-  v=$(git describe --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
+  v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
   if [ -n "$v" ]; then
     printf "%s" $v
   else

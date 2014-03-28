@@ -39,7 +39,7 @@ install=mqt-${pkgbase}.install
 
 pkgver() {
   cd folly
-  v=$(git describe --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
+  v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
   if [ -n "$v" ]; then
     printf "%s" $v
   else
