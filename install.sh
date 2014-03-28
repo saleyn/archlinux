@@ -17,11 +17,24 @@ function usage() {
   exit 1
 }
 
+#==============================================================================
+# Defaults
+#==============================================================================
 LISTONLY=0
 INSTALL=0
 PACKAGE=0
 TOOLCHAIN="gcc"
 
+export CC=gcc
+export CXX=g++
+export F77=gfortran
+export CFLAGS="-O3 $FLAGS_LOCAL_GCC"
+export CXXFLAGS="$OPT_CFLAGS"
+export FFLAGS="-O3 $FLAGS_LOCAL_GCC"
+
+#==============================================================================
+# Parameter checking loop
+#==============================================================================
 while getopts "halib:p:c:C:s:t:" o; do
   case $o in
     i) INSTALL=1;;
@@ -45,9 +58,27 @@ while getopts "halib:p:c:C:s:t:" o; do
     s) ! which namcap >&/dev/null && echo "namcap package not installed!" && exit 1
        namcap -i pkg/${OPTARG}.PKGBUILD
        exit 0;;
-    t) case $OPTARG in
-         gcc|clang|intel) TOOLCHAIN=$OPTARG;;
-         *) echo "Invalid toolchain! Expected one of: gcc, clang, intel"
+    t) TOOLCHAIN=$OPTARG
+       case $OPTARG in
+         gcc)
+            ;;
+         clang)
+            export CC=clang
+            export CXX=clang++
+            export F77=gfortran
+            export CFLAGS="-Ofast $FLAGS_LOCAL_CLANG"
+            export CXXFLAGS="$OPT_CFLAGS"
+            export FFLAGS="-O3 $FLAGS_LOCAL_GCC"
+            ;;
+         intel) 
+            export CC=gcc
+            export CXX=g++
+            export F77=gfortran
+            export CFLAGS="-O3 $FLAGS_LOCAL_INTEL"
+            export CXXFLAGS="$OPT_CFLAGS"
+            export FFLAGS="-O3 $FLAGS_LOCAL_INTEL"
+            ;;
+         *) echo "Invalid toolchain! Supported values: gcc, clang, intel"
             exit 1;;
        esac;;
     *) usage;;
@@ -71,6 +102,9 @@ fi
 
 TOOLSET_SFX="-${TOOLCHAIN:-gcc}"
 
+#==============================================================================
+# Manifest processing
+#==============================================================================
 [ ! -f Manifest ] && echo "Manifest file not found!" && exit 1
 [ ! -d "build"  ] && mkdir build
 
@@ -140,7 +174,7 @@ sed -n "$FILTER" Manifest | \
     rm -f $name*.log.*  # Remove stale versioned log files
 
     if [ -z "$PKG" ] ; then
-      makepkg -L
+      makepkg -L -s
       PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
     else
       echo "Skiping build (found build/$mqtname/$PKG)"

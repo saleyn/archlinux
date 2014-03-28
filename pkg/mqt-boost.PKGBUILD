@@ -91,7 +91,7 @@ build() {
       --build-dir=/tmp/boost \
       --layout=system \
       --prefix="${_stagedir}" \
-      ${JOBS} -d2 \
+      ${JOBS} \
       variant=release \
       optimization=speed \
       debug-symbols=off \
@@ -104,6 +104,8 @@ build() {
       cxxflags="${CPPFLAGS} ${CFLAGS} -Wno-unused-local-typedefs -march=native" \
       linkflags="${LDFLAGS}" \
       install
+
+    # Note: for debugging add "-d2" switch to the command above
 }
 
 package() {

@@ -1,5 +1,8 @@
 ## Collection of Archlinux PKGBUILDs ##
 
+The purpose of this repository is to allow building and installing
+selected packages on ArchLinux using different toolchains: gcc, clang, intel
+
 ### Binary Packages ###
 
 See: https://github.com/saleyn/archlinux-pkg
@@ -78,6 +81,19 @@ fields:
 * EnvDirName  - subdirectory name under ``/opt/env/prod`` that will be used to
                 link to the corresponding package installation location under
                 ``/opt/pkg``.
+
+### FAQ ###
+
+Q. Where are my packages being built?
+
+A. The packages are built in the ``build/PackageName`` directory, which is not part
+   of the git tree. After a package is installed, you can clear the content of that
+   directory by running ``./install.sh -c PackageName``.
+
+Q. Which toolchains are supported?
+
+A. You can pass one of the following toolchains to the ``install.sh`` script via
+   ``-t`` option: ``gcc, clang, intel``.
 
 ### License ###
 

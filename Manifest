@@ -1,16 +1,18 @@
 # This files defines the build/installation order
 #================================================
 
-#======================================
-# Packages obtained from AUR repository
-#======================================
-aur/double-conversion
-aur/google-gflags
 #========================
 # /usr installed packages
 #========================
 usr/cfengine
 usr/tokyocabinet
+
+#======================================
+# Packages obtained from AUR repository
+#======================================
+aur/double-conversion
+aur/google-gflags
+
 #============================
 # /opt/pkg installed packages
 #============================
@@ -29,3 +31,4 @@ mqt-boost
 mqt-thrift
 mqt-folly
 mqt-utxx        utxx
+mqt-armadillo
