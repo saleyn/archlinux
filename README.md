@@ -29,7 +29,7 @@ Creating a package requires to:
 * For custom post-installation create a script
   ``[mqt-]PackageName-ToolChain.install``
   This script can be created by running:
-  ``$ ./gen-install.sh [mqt-]PackageName-ToolChain``
+  ``$ ./gen-post-install.sh [mqt-]PackageName-ToolChain``
   Once created, it can be referenced in the PKGBUILD script by
   ``install=[mqt-]PackageName-ToolChain.install`` assignment
 * Add the package name to the ``Manifest``. The manifest lists packages

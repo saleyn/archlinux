@@ -1,15 +1,31 @@
 # This files defines the build/installation order
 #================================================
-#
+
+#======================================
+# Packages obtained from AUR repository
+#======================================
+aur/double-conversion
+aur/google-gflags
+#========================
 # /usr installed packages
-#
+#========================
 usr/cfengine
 usr/tokyocabinet
-usr/double-conversion
-usr/google-gflags
-#
+#============================
 # /opt/pkg installed packages
+#============================
+# The list contains two fields:
+# 1. PkgName    - Name of the package
+# 2. DirName    - Name of the directory for this package in /opt/env/prod
 #
-mqt-boost-gcc
-mqt-thrift-gcc
-mqt-folly-gcc
+# Note: in the list below DirName defaults to
+#       package name (without "mqt-") with the
+#       first letter capitalized.
+#       Example: "mqt-boost" will have DirName=Boost
+#
+# PkgName       /opt/env/prod/DirName
+# =======       =====================
+mqt-boost
+mqt-thrift
+mqt-folly
+mqt-utxx        utxx

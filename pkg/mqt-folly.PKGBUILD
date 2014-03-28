@@ -3,10 +3,15 @@
 # Contributor: Jonas Heinrich <onny@project-insanity.org>
 # Contributor: Serge Aleynikov <saleyn@gmail.com>
 
-toolset=${TOOLCHAIN:-gcc}
-TOOLSET=$(tr '[:lower:]' '[:upper:]' <<< ${toolset})
+# If TOOLCHAIN env var is set, then the package name
+# will contain "-${toolchain}" suffix in lower case
+# otherwise, it'll end with "-gcc"
+_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
+TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+
+_pkgsfx="-${_toolset}"
 pkgbase=folly
-pkgname=mqt-folly-${toolset}
+pkgname=mqt-${pkgbase}${_pkgsfx}
 pkgver=657.d9c79af
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
@@ -16,10 +21,10 @@ license=(Apache)
 depends=(google-glog
          google-gflags
          double-conversion
-         mqt-boost-${toolset}
+         mqt-boost${_pkgsfx}
         )
 GTEST=gtest-1.6.0
-makedepends=(git mqt-boost-${toolset} google-gflags double-conversion python2)
+makedepends=(git mqt-boost${_pkgsfx} google-gflags double-conversion python2)
 options=(staticlibs)
 source=(
   git+https://github.com/facebook/folly.git
@@ -30,7 +35,7 @@ source=(
 md5sums=('SKIP'
          '4577b49f2973c90bf9ba69aa8166b786')
 
-install=mqt-folly-${toolset}.install
+install=mqt-${pkgbase}.install
 
 pkgver() {
   cd folly

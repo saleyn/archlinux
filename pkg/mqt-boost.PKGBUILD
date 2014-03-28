@@ -7,14 +7,19 @@
 # Contributor: Luca Roccia <little_rock@users.sourceforge.net>
 # Contributor: Serge Aleynikov <saleyn@gmail.com>
 
-toolset=${TOOLCHAIN:-gcc}
-TOOLSET=$(tr '[:lower:]' '[:upper:]' <<< ${toolset})
+# If TOOLCHAIN env var is set, then the package name
+# will contain "-${toolchain}" suffix in lower case
+# otherwise, it'll end with "-gcc"
+_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
+TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+
+_pkgsfx="-${_toolset}"
 pkgbase=boost
-pkgname=mqt-boost-${toolset}
+pkgname=mqt-${pkgbase}${_pkgsfx}
 pkgver=1.55.0
 _boostver=${pkgver//./_}
 pkgrel=4
-url="http://www.boost.org/"
+url="http://www.boost.org"
 arch=('x86_64')
 license=('custom')
 makedepends=('icu>=52.1' 'python' 'python2' 'bzip2' 'zlib')
@@ -27,7 +32,7 @@ sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
           '61c614e9feaf4b6e12019e7ae137c77321fc65d1'
           '3cbc47339dafb9055f75227987bb74f78c1d957c')
 
-install=${pkgname}.install
+install=mqt-${pkgbase}.install
 
 prepare() {
     echo "Preparing ${pkgname} build"
@@ -61,16 +66,17 @@ build() {
     rm -f project-config.jam.*
 
     if [ ! -f project-config.jam ]; then
-        echo "===> Bootstrapping project-config.jam"
+        echo "===> Bootstrapping ${pkgbase}_${_boostver}/project-config.jam"
         ./bootstrap.sh \
-            --with-toolset=${toolset} \
+            --with-toolset=${_toolset} \
             --with-icu \
             --with-python=/usr/bin/python2 \
             --prefix="${_stagedir}" || return 1
     fi
 
     _bindir="bin.linuxx86"
-    [[ "${CARCH}" = "x86_64" ]] && _bindir="bin.linuxx86_64"
+    # Using this trick to check for x86_64 value or else namcap lint check complains
+    [ "${CARCH%*86_64}" = x ] && _bindir="bin.linuxx86_64"
 
     install -dm755 "${_stagedir}"/{bin,include,lib}
     install tools/build/v2/engine/${_bindir}/b2 "${_stagedir}"/bin/b2
@@ -87,14 +93,15 @@ build() {
       --prefix="${_stagedir}" \
       ${JOBS} -d2 \
       variant=release \
+      optimization=speed \
       debug-symbols=off \
       threading=multi \
       runtime-link=shared \
       link=shared \
-      toolset=${toolset} \
+      toolset=${_toolset} \
       python=2.7 \
-      cflags="${CFLAGS} -Wno-unused-local-typedefs -O3 -march=native" \
-      cxxflags="${CPPFLAGS} ${CFLAGS} -Wno-unused-local-typedefs -O3 -march=native" \
+      cflags="${CFLAGS} -Wno-unused-local-typedefs -march=native" \
+      cxxflags="${CPPFLAGS} ${CFLAGS} -Wno-unused-local-typedefs -march=native" \
       linkflags="${LDFLAGS}" \
       install
 }

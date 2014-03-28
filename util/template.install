@@ -1,8 +1,10 @@
-ENV_DIR="${pkgdir}"/opt/env/prod/Boost
-INSTALL_DIR="${pkgdir}"/opt/pkg/boost/current
+ENV_DIR="${pkgdir}"/opt/env/prod/@ENV_PACKAGE_DIR@
+INSTALL_DIR="${pkgdir}"/opt/pkg/@package@/current
 
 post_install() {
     echo "New package version: $1"
+    echo "Env dir            : ${ENV_DIR}"
+    echo "Install dir        : ${INSTALL_DIR}"
 
     mkdir -p "${ENV_DIR}"
     rm    -f "${ENV_DIR}"/Current
@@ -13,4 +15,5 @@ post_install() {
 post_remove() {
     echo "Checking ${INSTALL_DIR}"
     [ ! -d "${INSTALL_DIR}" ] && rm -f "${ENV_DIR}"/Current
+    [ ! -d "${pkgdir}"/opt/pkg/@package@ ] && rm -rf "${ENV_DIR}"
 }
