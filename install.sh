@@ -152,7 +152,7 @@ sed -n "$FILTER" Manifest | \
 
     if [ $INSTALL -eq 1 ]; then
       echo -en "\e[0;32;40m===> Installing $PKG\n\e[0m"
-      echo 'Y' | makepkg -i -L
+      makepkg -i -L --noconfirm
     fi
 
     popd > /dev/null 2>&1
