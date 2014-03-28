@@ -18,10 +18,10 @@ url="http://www.boost.org/"
 arch=('x86_64')
 license=('custom')
 makedepends=('icu>=52.1' 'python' 'python2' 'bzip2' 'zlib')
-source=(http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz
-        001-log_fix_dump_avx2.patch::https://projects.archlinux.org/svntogit/packages.git/plain/trunk/001-log_fix_dump_avx2.patch?h=packages/boost 
-        002-circular_buffer.patch::https://github.com/boostorg/circular_buffer/commit/f5303c70d813b993097ab1c376ac0612b2613b4f.patch
-        boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip)
+source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz"
+        '001-log_fix_dump_avx2.patch::https://projects.archlinux.org/svntogit/packages.git/plain/trunk/001-log_fix_dump_avx2.patch?h=packages/boost'
+        '002-circular_buffer.patch::https://github.com/boostorg/circular_buffer/commit/f5303c70d813b993097ab1c376ac0612b2613b4f.patch'
+        'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip')
 sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
           'a4a47cc5716df87d544ae7684aaf402287132d50'
           '61c614e9feaf4b6e12019e7ae137c77321fc65d1'
@@ -54,13 +54,20 @@ build() {
     local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
     JOBS=${JOBS:- -j$(nproc)}
 
+    rm -f ../${pkgbase}*.log.*
+
     cd ${pkgbase}_${_boostver}
 
-    ./bootstrap.sh \
-        --with-toolset=${toolset} \
-        --with-icu \
-        --with-python=/usr/bin/python2 \
-        --prefix="/opt/pkg/boost/${pkgver}"
+    rm -f project-config.jam.*
+
+    if [ ! -f project-config.jam ]; then
+        echo "===> Bootstrapping project-config.jam"
+        ./bootstrap.sh \
+            --with-toolset=${toolset} \
+            --with-icu \
+            --with-python=/usr/bin/python2 \
+            --prefix="${_stagedir}" || return 1
+    fi
 
     _bindir="bin.linuxx86"
     [[ "${CARCH}" = "x86_64" ]] && _bindir="bin.linuxx86_64"
@@ -74,21 +81,11 @@ build() {
     # and installs includes in /usr/include/boost.
     # --layout=system no longer adds the -mt suffix for multi-threaded libs.
     # install to ${_stagedir} in preparation for split packaging
-    echo "${_stagedir}/bin/b2 \
-      variant=release \
-      debug-symbols=off \
-      threading=multi \
-      runtime-link=shared \
-      link=shared \
-      toolset=${toolset} \
-      python=2.7 \
-      cflags="${CPPFLAGS} ${CFLAGS} -Wunused-local-typedefs -O3" linkflags="${LDFLAGS}" \
-      --layout=system \
-      --without-mpi \
-      --prefix="${_stagedir}" \
-      ${JOBS} \
-      install
     "${_stagedir}"/bin/b2 \
+      --build-dir=/tmp/boost \
+      --layout=system \
+      --prefix="${_stagedir}" \
+      ${JOBS} -d2 \
       variant=release \
       debug-symbols=off \
       threading=multi \
@@ -96,17 +93,14 @@ build() {
       link=shared \
       toolset=${toolset} \
       python=2.7 \
-      cflags="${CPPFLAGS} ${CFLAGS} -Wunused-local-typedefs -O3" linkflags="${LDFLAGS}" \
-      --layout=system \
-      --without-mpi \
-      --prefix="${_stagedir}" \
-      ${JOBS} \
+      cflags="${CFLAGS} -Wno-unused-local-typedefs -O3 -march=native" \
+      cxxflags="${CPPFLAGS} ${CFLAGS} -Wno-unused-local-typedefs -O3 -march=native" \
+      linkflags="${LDFLAGS}" \
       install
 }
 
 package() {
     pkgdesc="Free peer-reviewed portable C++ source libraries - Development"
-    #depends=("mqt-boost-libs=${pkgver}")
     depends=('bzip2' 'zlib' 'icu')
     optdepends=('python: for python bindings'
                 'python2: for python2 bindings'
@@ -120,7 +114,7 @@ package() {
     install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/${TOOLSET}/{bin,lib}
     cp -a "${_stagedir}"/include "${pkgdir}"/"${INSTALL_DIR}"
     for d in bin lib; do
-        cp -a "${_stagedir}"/$d "${pkgdir}"/"${INSTALL_DIR}"
+        cp -a "${_stagedir}/$d" "${pkgdir}/${INSTALL_DIR}/${TOOLSET}"
     done
 
     #find "${_stagedir}"/lib -name \*.a -exec mv {} "${pkgdir}"/${DIR}/${TOOLSET}/lib \;

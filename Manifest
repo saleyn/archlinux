@@ -3,13 +3,13 @@
 #
 # /usr installed packages
 #
-usr/cfengine.PKGBUILD
-usr/tokyocabinet.PKGBUILD
-usr/double-conversion.PKGBUILD
-usr/google-gflags.PKGBUILD
+usr/cfengine
+usr/tokyocabinet
+usr/double-conversion
+usr/google-gflags
 #
 # /opt/pkg installed packages
 #
-mqt-boost-gcc.PKGBUILD
-mqt-thrift-gcc.PKGBUILD
-mqt-folly-gcc.PKGBUILD
+mqt-boost-gcc
+mqt-thrift-gcc
+mqt-folly-gcc

@@ -23,7 +23,7 @@ md5sums=('5ee6b49f8b3e37a71d86dc7541c1aa04')
 
 install=${pkgname}.install
 
-ENV_DIR=/opt/env
+ENV_DIR=/opt/env/prod
 INSTALL_DIR=/opt/pkg
 THRIFT_DIR="${INSTALL_DIR}"/${pkgbase}/${pkgver}
 
