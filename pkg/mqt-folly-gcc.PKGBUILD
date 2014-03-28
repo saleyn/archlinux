@@ -55,10 +55,10 @@ build() {
   JOBS=${JOBS:- -j$(nproc)}
 
   echo "==== Building folly ==="
-  cd "$srcdir"/folly/folly
 
-  grep -q '\[double-conversion\]' configure.ac && \
-    sed -i 's/\[double-conversion\]/\[double_conversion_pic\]/' configure.ac
+  rm -f "${pkgbase}*.log.*"
+
+  cd "$srcdir"/folly/folly
 
   grep -q "^CPPFLAGS += -I$GTEST/include -I\.\.$" test/Makefile.am ||
     sed -i "s/^CPPFLAGS += -I$GTEST\/include$/& -I../" test/Makefile.am
@@ -69,12 +69,12 @@ build() {
 
   # building shared library fails at it requires libiberty.so, gcc package provides only static library
   ./configure \
+    --disable-shared \
     --prefix=/opt/pkg/${pkgbase}/${pkgver} \
     --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \
     --with-boost=/opt/env/prod/Boost/Current \
-    --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib \
-    --disable-shared
-  make $JOBS
+    --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib
+  make $JOBS V=0
 }
 
 package() {
@@ -83,6 +83,9 @@ package() {
   echo "==== Packaging folly ==="
 
   make DESTDIR="${pkgdir}" install
+
+  cd "${pkgdir}"/opt/pkg/${pkgbase}
+  ln -vs ${pkgver} current
 
   # remove gtest libraries installed by the package
   rm "$pkgdir"/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET}/lib/{libgtest,libgtestmain}.a

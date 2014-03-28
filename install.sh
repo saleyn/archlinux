@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # vim:ts=2 sw=2 et
 
 function usage() {
@@ -33,8 +33,8 @@ while getopts "halib:p:c:C:" o; do
     c) echo "Removing build/$OPTARG"
        rm -fr build/$OPTARG
        exit 0;;
-    C) [ ! -f "build/$OPTARG/$OPTARG*.xz" ] && \
-          "No pre-built package $OPTARG found!" && \
+    C) [ ! -f build/$OPTARG/$OPTARG*.xz ] && \
+          echo "No pre-built package build/$OPTARG/$OPTARG*.xz found!" && \
           exit 1
        echo "Deleting build/$OPTARG/$OPTARG*.xz"
        rm -f build/$OPTARG/$OPTARG*.xz || exit 1
