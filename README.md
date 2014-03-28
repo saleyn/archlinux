@@ -25,13 +25,14 @@ There are two types of packages maintained here:
 
 Creating a package requires to:
 
-a. Create a package spec in the form ``[mqt-]PackageName-ToolChain.PKGBUILD``
-b. For custom post-installation create a script ``[mqt-]PackageName-ToolChain.install``
-   This script can be created by running: ``$ gen-install.sh [mqt-]PackageName-ToolChain``
-   Once created, it can be referenced in the PKGBUILD script by
-   ``install=[mqt-]PackageName-ToolChain.install`` assignment
-
-c. Add the package name to the ``Manifest``. The manifest lists packages
+* Create a package spec in the form ``[mqt-]PackageName-ToolChain.PKGBUILD``
+* For custom post-installation create a script
+  ``[mqt-]PackageName-ToolChain.install``
+  This script can be created by running:
+  ``$ ./gen-install.sh [mqt-]PackageName-ToolChain``
+  Once created, it can be referenced in the PKGBUILD script by
+  ``install=[mqt-]PackageName-ToolChain.install`` assignment
+* Add the package name to the ``Manifest``. The manifest lists packages
    in the order of installation
 
 ### License ###
