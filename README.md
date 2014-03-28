@@ -43,9 +43,7 @@ Creating a package requires to:
 
 * Create a package spec in the form ``[mqt-]PackageName.PKGBUILD``
 * Validate the package spec file by running:
-```
-$ ./install.sh -s mqt-PackageName
-```
+  ``$ ./install.sh -s mqt-PackageName``
 * By default post-installation involves running a script derived
   from ``template.install``. This script creates appropriate links
   in the ``/opt/env/prod`` directory. If the default behavior is not
@@ -61,7 +59,26 @@ $ ./install.sh -s mqt-PackageName
 ### Manifest File ###
 
 The ``Manifest`` file is used to provide the ``install.sh`` package build
-manager with information about which packages 
+manager with information about which packages are available for installation.
+
+The entries are in the installation order, and can be of the following naming
+convention:
+
+1. ``aur/PackageName`` - package spec to be found in the AUR arch repository
+                         (installed in the default system location ``/usr``).
+2. ``usr/PackageName`` - package spec found in the ``pkg/usr/PackageName`` directory
+                         (installed in the default system location ``/usr``).
+3. ``mqt-PackageName`` - package spec found in the ``pkg/mqt-PackageName`` location
+                         (installed in the custom location ``/opt/pkg/PackageName``).
+
+The last category of packages is represented in the ``Manifest`` by two
+fields:
+
+* PackageName - name of the package
+* EnvDirName  - subdirectory name under ``/opt/env/prod`` that will be used to
+                link to the corresponding package installation location under
+                ``/opt/pkg``.
+
 ### License ###
 
 This project is licensed under BSD Open Source license
