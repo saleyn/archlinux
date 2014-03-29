@@ -38,3 +38,5 @@ mqt-utxx            utxx
 mqt-armadillo
 mqt-libodb-boost    ODB
 mqt-zeromq          ZeroMQ
+
+usr/scribe  # Needs to be installed after boost and thrift

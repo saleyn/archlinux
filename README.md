@@ -3,11 +3,38 @@
 The purpose of this repository is to allow building and installing
 selected packages on ArchLinux using different toolchains: gcc, clang, intel
 
+### Prerequisites ###
+
+Install ``pacaur`` package manager wrapper around ``pacman``.
+Below are the steps to install it:
+
+```
+mkdir /tmp/build
+cd $_
+mkdir cower
+pushd $_
+wget https://aur.archlinux.org/packages/co/cower/PKGBUILD
+makepkg -i --noconfirm
+popd
+mkdir expac
+pushd $_
+wget -O PKGBUILD https://projects.archlinux.org/svntogit/packages.git/plain/trunk/PKGBUILD?h=packages/expac
+makepkg -i --noconfirm
+popd
+mkdir pacaur
+pushd $_
+wget https://aur.archlinux.org/packages/pa/pacaur/PKGBUILD
+makepkg -i -s
+popd
+rm -fr /tmp/build
+```
+
 ### Binary Packages ###
 
-See: https://github.com/saleyn/archlinux-pkg
+This repository contains package specs for Archlinux.
+For binary packages see: https://github.com/saleyn/archlinux-pkg
 
-### Building ###
+### Building / Installing a package ###
 
 In order to build a package ``mqt-boost-gcc``, run the following command:
 

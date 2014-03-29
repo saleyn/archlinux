@@ -23,7 +23,7 @@ optdepends=('python2: to use Python bindings'
             'erlang: to use Erlang bindings'
             'perl: to use Perl bindings'
             'perl-bit-vector: to use Perl bindings')
-options=(!emptydirs buildflags makeflags)
+options=(!emptydirs staticlibs buildflags makeflags)
 source=("https://github.com/saleyn/thrift/archive/mqt-${pkgver}.zip")
 md5sums=('5ee6b49f8b3e37a71d86dc7541c1aa04')
 
