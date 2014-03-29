@@ -1,5 +1,5 @@
 # vim:ts=2:sw=2:et
-# Contributor: Serge Aleynikov <saleyn@gmail.com>
+# Maintainer: Serge Aleynikov <saleyn@gmail.com>
 
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
@@ -12,12 +12,12 @@ pkgbase=armadillo
 pkgname=mqt-${pkgbase}${_pkgsfx}
 pkgver=4.100.2
 pkgrel=1
-pkgdesc='utxx is a collection of C++ utility components'
+pkgdesc='C++ linear algebra library'
 arch=('x86_64')
 url='http://arma.sourceforge.net'
 license=('MPL 2.0')
-depends=(mqt-boost${_pkgsfx} 'lapack' 'blas' 'boost')
-makedepends=(git mqt-boost${_pkgsfx} cmake)
+depends=('lapack' 'blas' "mqt-boost${_pkgsfx}")
+makedepends=("git" "mqt-boost${_pkgsfx}" "cmake")
 source=("http://downloads.sourceforge.net/sourceforge/arma/$pkgbase-$pkgver.tar.gz")
 md5sums=('dd422706778cde656d531b3c3919766e')
 
@@ -48,6 +48,8 @@ package() {
   echo "==== Packaging ${pkgname} ==="
 
   make DESTDIR="${pkgdir}" install
+  install -D -m644 LICENSE.txt \
+    "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/share/licenses/Armadillo/LICENSE"
 
   cd "${pkgdir}/opt/pkg/${pkgbase}"
   ln -vs ${pkgver} current
