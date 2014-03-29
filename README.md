@@ -91,7 +91,29 @@ Creating a package requires to:
 The ``Manifest`` file is used to provide the ``install.sh`` package build
 manager with information about which packages are available for installation.
 
-The entries are in the installation order, and can be of the following naming
+You can examine the content of manifest and installed packages by running:
+```
+$ ./install.sh -l
+PackageAlias                   EnvDirName      ArchPkgName               InstalledVersion
+============                   ==========      ===========               ================
+usr/cfengine                                   cfengine                  3.6.0b1-1 
+usr/tokyocabinet                               tokyocabinet              1.4.48-1 
+aur/double-conversion                          double-conversion         2.0.1-1 
+aur/google-gflags                              google-gflags             2.0-2 
+aur/msgpack                                    msgpack                   0.5.8-1 
+aur/libodb                                     libodb                    2.3.0-1 
+aur/libcutl                                    libcutl                   1.8.0-1 
+aur/libodb-mysql                               libodb-mysql              2.3.0-1 
+mqt-boost                      Boost           mqt-boost-gcc             1.55.0-4 
+mqt-thrift                     Thrift          mqt-thrift-gcc            0.9.1-1 
+mqt-folly                      Folly           mqt-folly-gcc             657.d9c79af-1 
+mqt-utxx                       utxx            mqt-utxx-gcc              1.1-1 
+mqt-armadillo                  Armadillo       mqt-armadillo-gcc         4.100.2-1 
+mqt-libodb-boost               ODB             mqt-libodb-boost-gcc      2.3.0-1 
+mqt-zeromq                     ZeroMQ          mqt-zeromq-gcc            4.0.4-1 
+usr/scribe                                     scribe-git-gcc            122.4452362-1 
+```
+The entries are listed in the installation order, and can be of the following naming
 convention:
 
 1. ``aur/PackageName`` - package spec to be found in the AUR arch repository
