@@ -131,8 +131,8 @@ if [ -z "$(sed -n "$FILTER" Manifest)" ]; then
 fi
 
 if (( LISTONLY )); then
-  printf "%-30s %-15s %-25s %s\n" ScriptName EnvDirName PackageName InstalledVersion
-  printf "%-30s %-15s %-25s %s\n" ========== ========== =========== ================
+  printf "%-30s %-15s %-25s %s\n" PackageAlias EnvDirName ArchPkgName InstalledVersion
+  printf "%-30s %-15s %-25s %s\n" ============ ========== =========== ================
 fi
 
 sed -n "$FILTER" Manifest | \
