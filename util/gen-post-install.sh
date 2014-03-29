@@ -10,9 +10,9 @@ if [ $# -lt 2 ]; then
 fi
 
 SCRIPT=$(readlink -f $0)
-DIR=${SCRIPT%/*}
+DIR=${SCRIPT%/*/*}
 
-TEMPLATE="$DIR/template.install"
+TEMPLATE="$DIR/util/template.install"
 
 [ ! -f "$TEMPLATE" ] && echo "File '$TEMPLATE' not found!" && exit 1
 
@@ -23,7 +23,7 @@ P=${P%-*}
 PACKAGE=$(echo $P | tr '[:lower:]' '[:upper:]')
 package=$(echo $P | tr '[:upper:]' '[:lower:]')
 ENV_PACKAGE_DIR=$2
-DESTINATION_FILE=${3:-"${DIR}/../pkg/$1.PKGBUILD.install"}
+DESTINATION_FILE=${3:-"${DIR}/pkg/$1.PKGBUILD.install"}
 
 sed -e "s/@PACKAGE@/$PACKAGE/g" \
     -e "s/@package@/$package/g" \

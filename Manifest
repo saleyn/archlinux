@@ -13,6 +13,9 @@ usr/tokyocabinet
 aur/double-conversion
 aur/google-gflags
 aur/msgpack
+aur/libodb
+aur/libcutl
+aur/libodb-mysql
 
 #============================
 # /opt/pkg installed packages
@@ -26,10 +29,12 @@ aur/msgpack
 #       first letter capitalized.
 #       Example: "mqt-boost" will have DirName=Boost
 #
-# PkgName       /opt/env/prod/DirName
-# =======       =====================
+# PkgName           /opt/env/prod/DirName
+# =======           =====================
 mqt-boost
 mqt-thrift
 mqt-folly
-mqt-utxx        utxx
+mqt-utxx            utxx
 mqt-armadillo
+mqt-libodb-boost    ODB
+mqt-zeromq          ZeroMQ

@@ -18,6 +18,7 @@ url='https://github.com/saleyn/utxx'
 license=('LGPL')
 depends=(mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx})
 makedepends=(git mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx} python2)
+options=(buildflags makeflags)
 source=(git+https://github.com/saleyn/utxx.git)
 md5sums=('SKIP')
 

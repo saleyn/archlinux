@@ -22,6 +22,7 @@ pkgrel=4
 url="http://www.boost.org"
 arch=('x86_64')
 license=('custom')
+options=(buildflags makeflags)
 makedepends=('icu>=52.1' 'python' 'python2' 'bzip2' 'zlib')
 source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz"
         '001-log_fix_dump_avx2.patch::https://projects.archlinux.org/svntogit/packages.git/plain/trunk/001-log_fix_dump_avx2.patch?h=packages/boost'

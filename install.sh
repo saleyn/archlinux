@@ -14,6 +14,7 @@ function usage() {
   echo "    -c Name       - Clear build directory for the given package"
   echo "    -C Name       - Clear the package-*.xz installation file"
   echo "    -t ToolChain  - Specify toolchain (gcc | clang | intel)"
+  echo "    -y            - Autoconfirm (no [Y/n] prompting)"
   exit 1
 }
 
@@ -35,7 +36,7 @@ export FFLAGS="-O3 $FLAGS_LOCAL_GCC"
 #==============================================================================
 # Parameter checking loop
 #==============================================================================
-while getopts "halib:p:c:C:s:t:" o; do
+while getopts "halib:p:c:C:s:t:y" o; do
   case $o in
     i) INSTALL=1;;
     l) LISTONLY=1
@@ -45,7 +46,7 @@ while getopts "halib:p:c:C:s:t:" o; do
     b) PACKAGE=1
        FILTER="/^#/d; \!$OPTARG!,\$p";;
     p) PACKAGE=1
-       FILTER="/^#/d; \!$OPTARG!p";;
+       FILTER="/^#/d; \!${OPTARG}\( \|$\)!p";;
     c) echo "Removing build/$OPTARG"
        rm -fr build/$OPTARG
        exit 0;;
@@ -81,6 +82,7 @@ while getopts "halib:p:c:C:s:t:" o; do
          *) echo "Invalid toolchain! Supported values: gcc, clang, intel"
             exit 1;;
        esac;;
+    y) NOCONFIRM=1;;
     *) usage;;
   esac
 done
@@ -153,7 +155,7 @@ sed -n "$FILTER" Manifest | \
     echo -en "\e[0;32;40m===> Processing package: $mqtname\n\e[0m"
 
     if [ "${repos}" = "aur" ]; then
-      pacaur -Syaq --noconfirm --noedit ${mqtname} 
+      pacaur -Syaq ${NOCONFIRM:+--noconfirm} --noedit ${mqtname} 
       continue
     fi
 
@@ -174,7 +176,7 @@ sed -n "$FILTER" Manifest | \
     rm -f $name*.log.*  # Remove stale versioned log files
 
     if [ -z "$PKG" ] ; then
-      makepkg -L -s
+      makepkg -L -s ${NOCONFIRM:+--noconfirm}
       PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
     else
       echo "Skiping build (found build/$mqtname/$PKG)"
@@ -186,7 +188,7 @@ sed -n "$FILTER" Manifest | \
 
     if [ $INSTALL -eq 1 ]; then
       echo -en "\e[0;32;40m===> Installing $PKG\n\e[0m"
-      makepkg -i -L --noconfirm
+      makepkg -i -L ${NOCONFIRM:+--noconfirm}
     fi
 
     popd > /dev/null 2>&1

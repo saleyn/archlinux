@@ -25,7 +25,7 @@ depends=(google-glog
         )
 GTEST=gtest-1.6.0
 makedepends=(git mqt-boost${_pkgsfx} google-gflags double-conversion python2)
-options=(staticlibs)
+options=(staticlibs buildflags makeflags)
 source=(
   git+https://github.com/facebook/folly.git
   http://googletest.googlecode.com/files/${GTEST}.zip
