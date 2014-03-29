@@ -12,6 +12,7 @@ usr/tokyocabinet
 #======================================
 aur/double-conversion
 aur/google-gflags
+aur/msgpack
 
 #============================
 # /opt/pkg installed packages
