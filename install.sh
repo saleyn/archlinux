@@ -11,11 +11,12 @@ function usage() {
   echo "  -a              - Process all packages"
   echo "  -p Name[,Name]  - Process selected package(s)"
   echo "  -b Name         - Process packages beginning with Name"
+  echo "  -D              - Download only (no build/install)"
   echo "  -c Name         - Clear build directory for the given package"
   echo "  -C Name         - Clear the package-*.xz installation file"
   echo "  -t ToolChain    - Specify toolchain (gcc | clang | intel)"
   echo "  --confirm       - No autoconfirm ([Y/n] prompting)"
-  echo "  -d, --debug     - Debug mode"
+  echo "  --debug         - Debug mode"
   exit 1
 }
 
@@ -27,6 +28,7 @@ INSTALL=0
 PACKAGE=0
 TOOLCHAIN="gcc"
 CONFIRM="--noconfirm"
+DOWNLOAD_ONLY=0
 
 export CC=gcc
 export CXX=g++
@@ -43,6 +45,7 @@ export FFLAGS="-O3 $FLAGS_LOCAL_GCC"
 while [ -n "$1" ]; do
   case $1 in
     -i) INSTALL=1;;
+    -D) DOWNLOAD_ONLY=1;;
     -l) LISTONLY=1; [ -z "$FILTER" ] && FILTER='/^#/d; p';;
     -a) PACKAGE=1; ALL_PKGS=1;;
     -b) shift; PACKAGE=1; BEGIN_PKG="$1";;
@@ -84,7 +87,7 @@ while [ -n "$1" ]; do
             exit 1;;
         esac;;
     --confirm)  CONFIRM="";;
-    -d|--debug) DEBUG=1;;
+    --debug)    DEBUG=1;;
      *) echo "ERROR: unsupported option: $1"
         usage;;
   esac
@@ -126,7 +129,7 @@ TOOLSET_SFX="-${TOOLCHAIN:-gcc}"
 [ ! -d "build"  ] && mkdir build
 
 if [ -z "$(sed -n "$FILTER" Manifest)" ]; then
-  echo "No matching packages found!"
+  echo "No matching packages found in Manifest!"
   exit 1
 fi
 
@@ -191,12 +194,14 @@ sed -n "$FILTER" Manifest | \
 
     rm -f $name*.log.*  # Remove stale versioned log files
 
-    if [ -z "$PKG" ] ; then
+    if [ -n "$PKG" ] ; then
+      echo "Skiping build (found build/$mqtname/$PKG)"
+    elif (( DOWNLOAD_ONLY )); then
+      makepkg -L -s -o
+    else
       makepkg -L -s ${CONFIRM}
       PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
       [ -z "$PKG" ] && exit 1
-    else
-      echo "Skiping build (found build/$mqtname/$PKG)"
     fi
 
     if (( INSTALL )); then
