@@ -14,10 +14,7 @@ pkgver=4.2.3.1135
 pkgrel=1
 pkgdesc='MOEX Astsbridge'
 arch=('x86_64')
-url='http://arma.sourceforge.net'
-license=('MPL 2.0')
-depends=()
-makedepends=()
+url='http://ftp.moex.com/pub'
 source=("http://ftp.moex.com/pub/ClientsAPI/ASTS/${pkgbase}-${pkgver}.zip")
 md5sums=('4bdb26d3fffa4dc4955fdf3282385c6c')
 

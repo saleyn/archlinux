@@ -32,10 +32,12 @@ aur/libodb-mysql
 # PkgName           /opt/env/prod/DirName
 # =======           =====================
 mqt-astsbridge      MTESRL-TSMR
+mqt-cgate           P2CGate
 mqt-boost
 mqt-thrift
 mqt-folly
 mqt-utxx            utxx
+mqt-eixx            eixx
 mqt-armadillo
 mqt-libodb-boost    ODB
 mqt-zeromq          ZeroMQ

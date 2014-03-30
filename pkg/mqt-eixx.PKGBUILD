@@ -8,30 +8,27 @@ _toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
 
 _pkgsfx=-${_toolset}
-pkgbase=utxx
+pkgbase=eixx
 pkgname=mqt-${pkgbase}${_pkgsfx}
-pkgver=1.1
+pkgver=1.1.71
 pkgrel=1
-pkgdesc='utxx is a collection of C++ utility components'
+pkgdesc='Erlang C++ interface library'
 arch=('x86_64')
-url='https://github.com/saleyn/utxx'
+url='https://github.com/saleyn/eixx'
 license=('LGPL')
-depends=(mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx})
+depends=(mqt-boost${_pkgsfx})
 makedepends=(git mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx} python2)
 options=(buildflags makeflags)
-source=(git+https://github.com/saleyn/utxx.git)
+source=(git+https://github.com/saleyn/eixx.git)
 md5sums=('SKIP')
 
 install=mqt-${pkgbase}.install
 
 pkgver() {
   cd ${pkgbase}
-  v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
-  if [ -n "$v" ]; then
-    printf "%s" $v
-  else
-    printf "%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-  fi
+  printf "%s.%s" \
+    "$(git describe --tags --abbrev=0 | sed 's/[^0-9]*//')" \
+    "$(git rev-list --count HEAD)"
 }
 
 build() {
@@ -52,9 +49,7 @@ build() {
     --prefix=/opt/pkg/${pkgbase}/${pkgver} \
     --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \
     --with-boost=/opt/env/prod/Boost/Current \
-    --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib \
-    --with-thrift=/opt/env/prod/Thrift/Current \
-    --with-thrift-libdir=/opt/env/prod/Thrift/Current/${TOOLSET}/lib
+    --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib
   make $JOBS
 }
 
