@@ -12,12 +12,26 @@ function usage() {
   echo "  -p Name[,Name]  - Process selected package(s)"
   echo "  -b Name         - Process packages beginning with Name"
   echo "  -D              - Download only (no build/install)"
-  echo "  -c Name         - Clear build directory for the given package"
-  echo "  -C Name         - Clear the package-*.xz installation file"
+  echo "  -R              - Remove the package(s)"
+  echo "  -c [Name]       - Clear build directory for the given package"
+  echo "  -C [Name]       - Clear the package-*.xz installation file"
   echo "  -t ToolChain    - Specify toolchain (gcc | clang | intel)"
   echo "  --confirm       - No autoconfirm ([Y/n] prompting)"
   echo "  --debug         - Debug mode"
   exit 1
+}
+
+function remove_pkg() {
+  [ ! -f build/$1/$1*.xz ] && \
+    echo "No pre-built package build/$1/$1*.xz found!" && \
+    return
+  echo "Deleting build/$1/$1*.xz"
+  rm -f build/$1/$1*.xz 
+}
+
+function remove_build() {
+  echo "Removing build/$1"
+  rm -fr "build/$1"
 }
 
 #==============================================================================
@@ -25,10 +39,13 @@ function usage() {
 #==============================================================================
 LISTONLY=0
 INSTALL=0
+REMOVE=0
 PACKAGE=0
 TOOLCHAIN="gcc"
 CONFIRM="--noconfirm"
 DOWNLOAD_ONLY=0
+DELETE_PKG=0
+DELETE_BUILD=0
 
 export CC=gcc
 export CXX=g++
@@ -46,17 +63,20 @@ while [ -n "$1" ]; do
   case $1 in
     -i) INSTALL=1;;
     -D) DOWNLOAD_ONLY=1;;
-    -l) LISTONLY=1; [ -z "$FILTER" ] && FILTER='/^#/d; p';;
+    -R) REMOVE=1;;
+    -l) LISTONLY=1;;
     -a) PACKAGE=1; ALL_PKGS=1;;
     -b) shift; PACKAGE=1; BEGIN_PKG="$1";;
     -p) shift; PACKAGE=1; IFS=, read -ra p <<< "$1"; PKGS+=("${p[@]}"); unset p;;
-    -c) shift; echo "Removing build/$1"; rm -fr "build/$1"; exit 0;;
-    -C) shift
-        [ ! -f build/$1/$1*.xz ] && \
-          echo "No pre-built package build/$1/$1*.xz found!" && \
-          exit 1
-        echo "Deleting build/$1/$1*.xz"
-        rm -f build/$1/$1*.xz || exit 1
+    -c) DELETE_BUILD=1
+        [ "${2:0:1}" = '-' ] && break
+        shift
+        remove_build $1
+        exit 0;;
+    -C) DELETE_PKG=1
+        [ "${2:0:1}" = '-' ] && break
+        shift
+        remove_pkg $1 || exit 1
         exit 0;;
     -s) shift
         ! which namcap >&/dev/null && echo "namcap package not installed!" && exit 1
@@ -94,9 +114,13 @@ while [ -n "$1" ]; do
   shift
 done
 
-if (( INSTALL && ! PACKAGE )); then 
+if (( INSTALL && ! PACKAGE )); then
+  echo "No packages specified!"
   usage
-elif (( ALL_PKGS )); then
+elif (( (REMOVE | DELETE_PKG | DELETE_BUILD) && (INSTALL || DOWNLOAD_ONLY) )); then
+  echo "Conflicting flags: (-R | -c | -C) and (-i | -D)"
+  usage
+elif (( ALL_PKGS || (LISTONLY && ! PACKAGE) )); then
   FILTER='s/#.*$//; /^\s*$/d; p'
 elif [ -n "$BEGIN_PKG" ]; then 
   FILTER="s/#.*$//; /^\s*$/d; \!${BEGIN_PKG}!,\$p"
@@ -165,7 +189,16 @@ sed -n "$FILTER" Manifest | \
       PKGNAME=$mqtname
     fi
 
-    if (( LISTONLY )); then
+    if (( REMOVE )); then
+      sudo pacman -R $PKGNAME ${CONFIRM}
+      continue
+    elif (( DELETE_PKG )); then
+      remove_pkg $PKGNAME
+      continue
+    elif (( DELETE_BUILD )); then
+      remove_build $PKGNAME
+      continue
+    elif (( LISTONLY )); then
       printf "%-30s %-15s %-25s %s %s\n" "$s" "$dirname" "$PKGNAME" \
         $(pacman -Q $PKGNAME 2>/dev/null | cut -d\  -f2)
       continue

@@ -4,20 +4,18 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx=-${_toolset}
 pkgbase=armadillo
-pkgname=mqt-${pkgbase}${_pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=4.100.2
 pkgrel=1
 pkgdesc='C++ linear algebra library'
 arch=('x86_64')
 url='http://arma.sourceforge.net'
 license=('MPL 2.0')
-depends=('lapack' 'blas' "mqt-boost${_pkgsfx}")
-makedepends=("git" "mqt-boost${_pkgsfx}" "cmake")
+depends=('lapack' 'blas' 'mqt-boost')
+makedepends=('git' 'mqt-boost' 'cmake')
 source=("http://downloads.sourceforge.net/sourceforge/arma/$pkgbase-$pkgver.tar.gz")
 md5sums=('dd422706778cde656d531b3c3919766e')
 

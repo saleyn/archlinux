@@ -15,9 +15,14 @@ source=("http://fallabs.com/tokyocabinet/${pkgname}-${pkgver}.tar.gz")
 md5sums=('fd03df6965f8f56dd5b8518ca43b4f5e')
 
 build() {
+  local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
+  JOBS=${JOBS:- -j$(nproc)}
+
   cd "$srcdir/$pkgname-$pkgver"
-  ./configure --prefix=/usr --enable-off64 --enable-fastest
-  make
+  ./configure \
+    --enable-silent-rules \
+    --prefix=/usr --enable-off64 --enable-fastest
+  make $JOBS
 }
 
 # uncomment check routine if needed (can take ~5mins to run check)

@@ -4,12 +4,10 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx=-${_toolset}
 pkgbase=astsbridge
-pkgname=mqt-${pkgbase}${_pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=4.2.3.1135
 pkgrel=1
 pkgdesc='MOEX Astsbridge'

@@ -4,12 +4,10 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx=-${_toolset}
 pkgbase=libodb-boost
-pkgname=mqt-${pkgbase}${_pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=2.3.0
 pkgrel=1
 pkgdesc='The ODB boost profile library'
@@ -17,8 +15,8 @@ arch=('x86_64')
 url='http://www.codesynthesis.com/products/odb'
 options=('!libtool' buildflags makeflags)
 license=('GPL')
-depends=(mqt-boost${_pkgsfx} 'libodb')
-makedepends=(git mqt-boost${_pkgsfx} 'libodb')
+depends=('mqt-boost' 'libodb')
+makedepends=('git' 'mqt-boost' 'libodb')
 source=("http://www.codesynthesis.com/download/odb/2.3/${pkgbase}-${pkgver}.tar.bz2")
 md5sums=('2db307ced79231d78b75b1c80f4fd8f0')
 

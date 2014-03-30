@@ -4,12 +4,10 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx=-${_toolset}
 pkgbase=scribe
-pkgname=${pkgbase}-git${_pkgsfx}
+pkgname=${pkgbase}-git
 pkgver=122.4452362
 pkgrel=1
 pkgdesc='Log data aggregator'
@@ -17,8 +15,8 @@ arch=('x86_64')
 url='https://github.com/facebook/scribe'
 options=('!libtool' buildflags makeflags)
 license=('Apache')
-depends=(mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx})
-makedepends=(git mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx})
+depends=(mqt-boost mqt-thrift)
+makedepends=(git mqt-boost mqt-thrift)
 source=("git+https://github.com/saleyn/scribe.git#branch=ssl")
 md5sums=('SKIP')
 

@@ -5,12 +5,10 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-pkgsfx=-${_toolset}
 pkgbase=thrift
-pkgname=mqt-${pkgbase}${pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=0.9.1
 pkgrel=1
 pkgdesc="Scalable cross-language services framework for IPC/RPC"
@@ -18,7 +16,7 @@ arch=(x86_64)
 url="http://thrift.apache.org/"
 license=(Apache2.0)
 #makedepends=(boost java-environment apache-ant apache-ant-maven-tasks python2 php perl perl-bit-vector perl-class-accessor glib2)
-makedepends=(mqt-boost${pkgsfx} python2 glib2)
+makedepends=(mqt-boost python2 glib2)
 optdepends=('python2: to use Python bindings'
             'erlang: to use Erlang bindings'
             'perl: to use Perl bindings'

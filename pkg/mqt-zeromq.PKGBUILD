@@ -4,12 +4,10 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx=-${_toolset}
 pkgbase=zeromq
-pkgname=mqt-${pkgbase}${_pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=4.0.4
 pkgrel=1
 pkgdesc='0MQ libzmq core library -- development trunk'

@@ -10,12 +10,10 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx="-${_toolset}"
 pkgbase=boost
-pkgname=mqt-${pkgbase}${_pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=1.55.0
 _boostver=${pkgver//./_}
 pkgrel=4
@@ -69,7 +67,7 @@ build() {
     if [ ! -f project-config.jam ]; then
         echo "===> Bootstrapping ${pkgbase}_${_boostver}/project-config.jam"
         ./bootstrap.sh \
-            --with-toolset=${_toolset} \
+            --with-toolset=${TOOLSET} \
             --with-icu \
             --with-python=/usr/bin/python2 \
             --prefix="${_stagedir}" || return 1
@@ -99,7 +97,7 @@ build() {
       threading=multi \
       runtime-link=shared \
       link=shared \
-      toolset=${_toolset} \
+      toolset=${TOOLSET} \
       python=2.7 \
       cflags="${CFLAGS} -Wno-unused-local-typedefs -march=native" \
       cxxflags="${CPPFLAGS} ${CFLAGS} -Wno-unused-local-typedefs -march=native" \

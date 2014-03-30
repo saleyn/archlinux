@@ -6,12 +6,10 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx="-${_toolset}"
 pkgbase=folly
-pkgname=mqt-${pkgbase}${_pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=657.d9c79af
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
@@ -21,10 +19,10 @@ license=(Apache)
 depends=(google-glog
          google-gflags
          double-conversion
-         mqt-boost${_pkgsfx}
+         mqt-boost
         )
 GTEST=gtest-1.6.0
-makedepends=(git mqt-boost${_pkgsfx} google-gflags double-conversion python2)
+makedepends=(git mqt-boost google-gflags double-conversion python2)
 options=(staticlibs buildflags makeflags)
 source=(
   git+https://github.com/facebook/folly.git

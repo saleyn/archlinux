@@ -4,20 +4,18 @@
 # If TOOLCHAIN env var is set, then the package name
 # will contain "-${toolchain}" suffix in lower case
 # otherwise, it'll end with "-gcc"
-_toolset=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
-TOOLSET=$(tr  '[:lower:]' '[:upper:]' <<< ${_toolset})
+TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
-_pkgsfx=-${_toolset}
 pkgbase=utxx
-pkgname=mqt-${pkgbase}${_pkgsfx}
+pkgname=mqt-${pkgbase}
 pkgver=1.1
 pkgrel=1
 pkgdesc='utxx is a collection of C++ utility components'
 arch=('x86_64')
 url='https://github.com/saleyn/utxx'
 license=('LGPL')
-depends=(mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx})
-makedepends=(git mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx} python2)
+depends=(mqt-boost mqt-thrift)
+makedepends=(git mqt-boost mqt-thrift python2)
 options=(buildflags makeflags)
 source=(git+https://github.com/saleyn/utxx.git)
 md5sums=('SKIP')
