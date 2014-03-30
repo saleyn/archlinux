@@ -1,9 +1,9 @@
 # This files defines the build/installation order
 #================================================
 
-#========================
-# /usr installed packages
-#========================
+#===============================================
+# /usr installed packages (GCC compilation only)
+#===============================================
 usr/cfengine
 usr/tokyocabinet
 
