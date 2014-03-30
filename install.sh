@@ -164,6 +164,9 @@ fi
 
 sed -n "$FILTER" Manifest | \
   while read -r -a array; do
+    dirname=""
+    repos=""
+
     s=${array[0]}
     repos=${s%%/*}
     mqtname=${s#*/}               # Remove prefix before '/'
