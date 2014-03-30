@@ -22,8 +22,6 @@ makedepends=(git mqt-boost${_pkgsfx} mqt-thrift${_pkgsfx})
 source=("git+https://github.com/saleyn/scribe.git#branch=ssl")
 md5sums=('SKIP')
 
-install=${pkgbase}.install
-
 pkgver() {
   cd ${pkgbase}
   v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
