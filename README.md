@@ -14,7 +14,7 @@ cd $_
 mkdir cower
 pushd $_
 wget https://aur.archlinux.org/packages/co/cower/PKGBUILD
-makepkg -i --noconfirm
+makepkg -i -s --noconfirm
 popd
 mkdir expac
 pushd $_
