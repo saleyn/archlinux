@@ -33,6 +33,10 @@ THRIFT_DIR="${INSTALL_DIR}"/${pkgbase}/${pkgver}
 
 build() {
 
+  echo "==== Building ${pkgbase} ===="
+
+  rm -f ../${pkgbase}*.log.*
+
   cd $srcdir/$pkgbase-mqt-$pkgver
 
   BOOST_INSTALL_DIR=${ENV_DIR}/Boost/Current
@@ -41,8 +45,6 @@ build() {
   THREADS=$(nproc)
 
   ./bootstrap.sh
-
-  echo "==== Building Thrift ===="
 
   PYTHON=/usr/bin/python2 ./configure CXXFLAGS=" -g -O${OPTIMIZE}" \
             LDFLAGS="-L${BOOST_LIB_DIR} -Wl,-rpath,${BOOST_LIB_DIR}" \

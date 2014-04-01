@@ -38,7 +38,7 @@ build() {
 
   echo "==== Building ${pkgname} ==="
 
-  rm -f "${pkgbase}*.log.*"
+  rm -f ../${pkgbase}*.log.*
 
   cd "$srcdir"/${pkgbase}
 

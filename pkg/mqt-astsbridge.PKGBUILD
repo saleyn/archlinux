@@ -24,9 +24,10 @@ prepare() {
 }
 
 package() {
-  cd "${srcdir}"
-
+  #cd "${srcdir}"
   echo "==== Packaging ${pkgname} ==="
+
+  rm -f ../${pkgbase}*.log.*
 
   install -D -d -v -m755 "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/doc"
   install -D -d -v -m755 "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/include"

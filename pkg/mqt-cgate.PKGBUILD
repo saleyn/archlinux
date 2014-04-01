@@ -19,9 +19,11 @@ md5sums=('6deb3ab7d31cb7943bb141c5932e6f52')
 install=mqt-${pkgbase}.install
 
 package() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
-
   echo "==== Packaging ${pkgname} ==="
+
+  rm -f ../${pkgbase}*.log.*
+
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
   install -D -d -v -m755 "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/bin"
   install -D -d -v -m755 "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/include"

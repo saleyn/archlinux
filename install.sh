@@ -11,6 +11,7 @@ function usage() {
   echo "  -a              - Process all packages"
   echo "  -p Name[,Name]  - Process selected package(s)"
   echo "  -b Name         - Process packages beginning with Name"
+  echo "  -e, --noextract - Don't extract package, use existing src content"
   echo "  -D              - Download only (no build/install)"
   echo "  -R              - Remove the package(s)"
   echo "  -c [Name]       - Clear build directory for the given package"
@@ -46,6 +47,7 @@ CONFIRM="--noconfirm"
 DOWNLOAD_ONLY=0
 DELETE_PKG=0
 DELETE_BUILD=0
+NOEXTRACT=""
 
 export CC=gcc
 export CXX=g++
@@ -106,8 +108,9 @@ while [ -n "$1" ]; do
           *) echo "Invalid toolchain! Supported values: gcc, clang, intel"
             exit 1;;
         esac;;
-    --confirm)  CONFIRM="";;
-    --debug)    DEBUG=1;;
+    -e|--noextract) NOEXTRACT="-e";;
+    --confirm)      CONFIRM="";;
+    --debug)        DEBUG=1;;
      *) echo "ERROR: unsupported option: $1"
         usage;;
   esac
@@ -235,7 +238,7 @@ sed -n "$FILTER" Manifest | \
     elif (( DOWNLOAD_ONLY )); then
       makepkg -L -s -o
     else
-      makepkg -L -s ${CONFIRM}
+      makepkg -L -s ${CONFIRM} ${NOEXTRACT}
       PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
       [ -z "$PKG" ] && exit 1
     fi

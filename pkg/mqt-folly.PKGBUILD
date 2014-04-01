@@ -10,7 +10,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=folly
 pkgname=mqt-${pkgbase}
-pkgver=657.d9c79af
+pkgver=666.72c2a0d
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
 arch=x86_64
@@ -48,6 +48,7 @@ pkgver() {
 prepare() {
   cd folly/folly
   find -name '*.py' -exec sed -i 's|^#!/usr/bin/env python$|#!/usr/bin/env python2|' {} \;
+  sed -i '/AM_INIT_AUTOMAKE/s/nostdinc\])/subdir-objects &/' configure.ac
 
   cd test
   ln -s "$srcdir"/$GTEST
@@ -57,21 +58,22 @@ build() {
   local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
   JOBS=${JOBS:- -j$(nproc)}
 
-  echo "==== Building folly ==="
+  echo "==== Building ${pkgbase} (pwd: ${PWD}) ===="
 
-  rm -f "${pkgbase}*.log.*"
+  rm -f ../${pkgbase}*.log.*
 
   cd "$srcdir"/folly/folly
 
   grep -q "^CPPFLAGS += -I$GTEST/include -I\.\.$" test/Makefile.am ||
     sed -i "s/^CPPFLAGS += -I$GTEST\/include$/& -I../" test/Makefile.am
 
-  autoreconf --install
+  autoreconf -vif
 
-  CPPFLAGS="$CPPFLAGS -I/usr/include/double-conversion -Wno-deprecated -g -O3"
+  CPPFLAGS="$CPPFLAGS -DFBSTRING_CONSERVATIVE -I/usr/include/double-conversion -Wno-deprecated -g -O3"
 
   # building shared library fails at it requires libiberty.so, gcc package provides only static library
   ./configure \
+    --enable-silent-rules \
     --disable-shared \
     --prefix=/opt/pkg/${pkgbase}/${pkgver} \
     --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \
