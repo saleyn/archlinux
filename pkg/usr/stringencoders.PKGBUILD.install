@@ -1,0 +1,21 @@
+ENV_DIR="${pkgdir}"/opt/env/prod/StringEncoders
+INSTALL_DIR="${pkgdir}"/usr/local
+
+post_install() {
+    echo "New package version: $1"
+    echo "Env dir            : ${ENV_DIR}"
+    echo "Install dir        : ${INSTALL_DIR}"
+
+    rm   -rf "${ENV_DIR}"/Current
+    mkdir -p "${ENV_DIR}"/Current/gcc
+    cd       "${ENV_DIR}"/Current/gcc
+    ln -s ${INSTALL_DIR}/lib lib
+    cd ..
+    ln -s ${INSTALL_DIR}/include 
+}
+
+post_remove() {
+    echo "Checking ${ENV_DIR}"
+    [ ! -d "${ENV_DIR}" ] && rm -f "${ENV_DIR}"/Current
+    [ ! -d "${pkgdir}"/stringencoders ] && rm -rf "${ENV_DIR}"
+}

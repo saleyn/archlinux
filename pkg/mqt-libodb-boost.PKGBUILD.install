@@ -7,9 +7,12 @@ post_install() {
     echo "Install dir        : ${INSTALL_DIR}"
 
     mkdir -p "${ENV_DIR}"
-    rm    -f "${ENV_DIR}"/Current
-    cd       "${ENV_DIR}"
-    ln -s ${INSTALL_DIR} Current
+    rm   -rf "${ENV_DIR}"/Current
+    mkdir -p "${ENV_DIR}"/Current/gcc
+    cd       "${ENV_DIR}"/Current/gcc
+    ln -s ${INSTALL_DIR} lib
+    ln -s /usr/bin ${ENV_DIR}/Current/gcc/bin
+    ln -s ${ENV_DIR}/Current/gcc/bin ${ENV_DIR}/Current/bin
 }
 
 post_remove() {
