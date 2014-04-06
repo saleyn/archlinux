@@ -44,8 +44,10 @@ build() {
 
   ./bootstrap
 
+  [ -z "$DEBUG" ] && SILENT="--enable-silent-rules"
+
   ./configure \
-    --enable-silent-rules \
+    ${SILENT} \
     --enable-optimize \
     --prefix=/opt/pkg/${pkgbase}/${pkgver} \
     --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \

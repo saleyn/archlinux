@@ -10,7 +10,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=folly
 pkgname=mqt-${pkgbase}
-pkgver=666.72c2a0d
+pkgver=672.fbee7f6
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
 arch=x86_64
@@ -27,11 +27,13 @@ options=(staticlibs buildflags makeflags)
 source=(
   git+https://github.com/facebook/folly.git
   http://googletest.googlecode.com/files/${GTEST}.zip
+  https://github.com/saleyn/folly/compare/atomic-hash-allocator.patch
 )
 # that sucks that the project downloads gtests sources, it should use system libraries
 # https://github.com/facebook/folly/issues/48
 md5sums=('SKIP'
-         '4577b49f2973c90bf9ba69aa8166b786')
+         '4577b49f2973c90bf9ba69aa8166b786'
+         'a26cf9125424f0169b88e26a1580afdb')
 
 install=mqt-${pkgbase}.install
 
@@ -46,7 +48,10 @@ pkgver() {
 }
 
 prepare() {
-  cd folly/folly
+  cd folly
+  patch -p1 < ../atomic-hash-allocator.patch
+
+  cd folly
   find -name '*.py' -exec sed -i 's|^#!/usr/bin/env python$|#!/usr/bin/env python2|' {} \;
   sed -i '/AM_INIT_AUTOMAKE/s/nostdinc\])/subdir-objects &/' configure.ac
 
