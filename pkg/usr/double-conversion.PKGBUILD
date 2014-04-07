@@ -14,7 +14,7 @@ source=(https://double-conversion.googlecode.com/files/$pkgname-$pkgver.tar.gz)
 sha1sums=('34644bfd063aba87436536e029b0dfb109df850f')
 
 build() {
-  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+  cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
   make
 }
 

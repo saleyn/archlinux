@@ -6,11 +6,11 @@
 #===============================================
 usr/cfengine
 usr/tokyocabinet
+usr/double-conversion
 
 #======================================
 # Packages obtained from AUR repository
 #======================================
-aur/double-conversion
 aur/google-gflags
 aur/msgpack
 aur/libodb

@@ -33,7 +33,7 @@ source=(
 # https://github.com/facebook/folly/issues/48
 md5sums=('SKIP'
          '4577b49f2973c90bf9ba69aa8166b786'
-         'a26cf9125424f0169b88e26a1580afdb')
+         '6482cb8149b7e803897de8a5ca41d659')
 
 install=mqt-${pkgbase}.install
 
@@ -74,12 +74,14 @@ build() {
 
   autoreconf -vif
 
-  CPPFLAGS="$CPPFLAGS -DFBSTRING_CONSERVATIVE -I/usr/include/double-conversion -Wno-deprecated -g -O3"
+  CPPFLAGS="$CPPFLAGS -DFBSTRING_CONSERVATIVE"
+  CPPFLAGS+=" -I/usr/include/double-conversion -Wno-deprecated -g -O3"
 
   # building shared library fails at it requires libiberty.so, gcc package provides only static library
   ./configure \
     --enable-silent-rules \
-    --disable-shared \
+    --enable-shared \
+    --with-libiberty=no \
     --prefix=/opt/pkg/${pkgbase}/${pkgver} \
     --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \
     --with-boost=/opt/env/prod/Boost/Current \
