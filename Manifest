@@ -4,9 +4,8 @@
 #===============================================
 # /usr installed packages (GCC compilation only)
 #===============================================
-usr/tokyocabinet
-usr/cfengine
 usr/double-conversion
+usr/cfengine
 
 #======================================
 # Packages obtained from AUR repository
