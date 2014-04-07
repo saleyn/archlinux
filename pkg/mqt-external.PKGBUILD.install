@@ -1,12 +1,22 @@
 ENV_DIR="${pkgdir}"/opt/env/prod
 
 post_install() {
-    [ ! -L "${ENV_DIR}"/MsgPack/Current ]     && ln -vs /usr "${ENV_DIR}"/MsgPack/Current
-    [ ! -L "${ENV_DIR}"/ODB/Current/gcc/bin ] && ln -vs /usr/bin/odb "${ENV_DIR}"/ODB/Current/gcc/bin
+    [ ! -d "${ENV_DIR}"/MsgPack ]         && mkdir -vp   "${ENV_DIR}"/MsgPack
+    [ ! -L "${ENV_DIR}"/MsgPack/Current ] && ln -vs /usr "${ENV_DIR}"/MsgPack/Current
+
+    [ ! -d "${ENV_DIR}"/ODB/Current/gcc ] && mkdir -vp "${ENV_DIR}"/ODB/Current/gcc
+    [ ! -L "${ENV_DIR}"/ODB/Current/gcc/bin ] && \
+        ln -vs /usr/bin/odb "${ENV_DIR}"/ODB/Current/gcc/bin
 }
 
 post_remove() {
     for f in "${ENV_DIR}"/MsgPack/Current "${ENV_DIR}"/ODB/Current/gcc/bin; do
-        [ ! -L "$f" ] && rm "$f"
+        [ -L "$f" ] && rm "$f"
     done
+
+    [ -d "${ENV_DIR}"/MsgPack ] && rmdir -v "${ENV_DIR}"/MsgPack
+
+    rmdir -v "${ENV_DIR}"/ODB/Current/gcc
+    rmdir -v "${ENV_DIR}"/ODB/Current
+    rmdir -v "${ENV_DIR}"/ODB
 }

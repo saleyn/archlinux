@@ -4,8 +4,8 @@
 #===============================================
 # /usr installed packages (GCC compilation only)
 #===============================================
-usr/cfengine
 usr/tokyocabinet
+usr/cfengine
 usr/double-conversion
 
 #======================================

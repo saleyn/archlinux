@@ -17,6 +17,7 @@ function usage() {
   echo "  -c [Name]       - Clear build directory for the given package"
   echo "  -C [Name]       - Clear the package-*.xz installation file"
   echo "  -t ToolChain    - Specify toolchain (gcc | clang | intel)"
+  echo "  -U              - Update checksums of the given package(s)"
   echo "  --confirm       - No autoconfirm ([Y/n] prompting)"
   echo "  --debug         - Debug mode"
   exit 1
@@ -33,6 +34,28 @@ function remove_pkg() {
 function remove_build() {
   echo "Removing build/$1"
   rm -fr "build/$1"
+}
+
+function update_checksums() {
+  echo "Updating checksums in $1"
+  {
+    newsums=$(makepkg -g -p "$1") && rm -f $1~ &&
+    exec awk -v newsums="$newsums" '
+    /^[[:blank:]]*(md|sha)[[:digit:]]+sums=/,/\)[[:blank:]]*(#.*)?$/ {
+      if (!w) {
+        print newsums
+        w++
+      }
+      next
+    }
+
+    1
+    END { if (!w) print newsums }
+    ' >> "$1~"
+  } < "$1"
+  local script=$(readlink -f $1)
+  echo "Script: $script"
+  mv -vf $1~ $script
 }
 
 #==============================================================================
@@ -108,6 +131,7 @@ while [ -n "$1" ]; do
           *) echo "Invalid toolchain! Supported values: gcc, clang, intel"
             exit 1;;
         esac;;
+    -U) UPD_CHECKSUMS=1;;
     -e|--noextract) NOEXTRACT="-e";;
     --confirm)      CONFIRM="";;
     --debug)        DEBUG=1;;
@@ -196,7 +220,7 @@ sed -n "$FILTER" Manifest | \
     fi
 
     if (( REMOVE )); then
-      sudo pacman -R $PKGNAME ${CONFIRM}
+      sudo pacman -Rnc $PKGNAME ${CONFIRM} || true
       continue
     elif (( DELETE_PKG )); then
       remove_pkg $PKGNAME
@@ -232,6 +256,8 @@ sed -n "$FILTER" Manifest | \
     PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
 
     rm -f $name*.log.*  # Remove stale versioned log files
+
+    (( UPD_CHECKSUMS )) && update_checksums PKGBUILD
 
     if [ -n "$PKG" ] ; then
       echo "Skiping build (found build/$mqtname/$PKG)"
