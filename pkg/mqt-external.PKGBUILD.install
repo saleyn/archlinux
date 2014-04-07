@@ -1,0 +1,12 @@
+ENV_DIR="${pkgdir}"/opt/env/prod
+
+post_install() {
+    [ ! -L "${ENV_DIR}"/MsgPack/Current ]     && ln -vs /usr "${ENV_DIR}"/MsgPack/Current
+    [ ! -L "${ENV_DIR}"/ODB/Current/gcc/bin ] && ln -vs /usr/bin/odb "${ENV_DIR}"/ODB/Current/gcc/bin
+}
+
+post_remove() {
+    for f in "${ENV_DIR}"/MsgPack/Current "${ENV_DIR}"/ODB/Current/gcc/bin; do
+        [ ! -L "$f" ] && rm "$f"
+    done
+}

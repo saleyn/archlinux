@@ -42,5 +42,7 @@ mqt-armadillo
 mqt-libodb-boost    ODB
 mqt-zeromq          ZeroMQ
 
-usr/scribe  # Needs to be installed after boost and thrift
+usr/scribe          # Needs to be installed after boost and thrift
 usr/stringencoders  StringEncoders
+
+mqt-external        # A 'catch-all' package with post-install script for all externals
