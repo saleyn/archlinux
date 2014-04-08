@@ -12,7 +12,7 @@ url='http://www.cfengine.org'
 license=('GPL3')
 options=('!libtool')
 arch=('x86_64')
-depends=('openssl' 'pcre' 'libxml2' 'tokyocabinet')
+depends=('openssl' 'pcre' 'libxml2' 'qdbm')
 optdepends=('tokyocabinet' 'libvirt' 'postgresql-libs' 'libmariadbclient')
 #install=${pkgname}.install
 source=("${pkgname}-${pkgver}.tar.gz::http://cfengine.com/source-code/download?file=${pkgname}-${pkgver}.tar.gz"
@@ -20,9 +20,9 @@ source=("${pkgname}-${pkgver}.tar.gz::http://cfengine.com/source-code/download?f
         'https://raw.githubusercontent.com/zizzfizzix/pkgbuilds/master/cfengine/cf-monitord.service'
         'https://raw.githubusercontent.com/zizzfizzix/pkgbuilds/master/cfengine/cf-serverd.service')
 md5sums=('7b73fecf2238c5f8afc9ca8ecb30e02f'
-         'b9b73328006416e27bb59968187707b3'
-         '3edfcfc72b89109dc7918ee552af76f5'
-         'd6978af146da94eed3f58a2bc28a87b3')
+         'dba17dc5133b8fa86de11577120d46c5'
+         'a2f9db31408f288cb934397ffb474db3'
+         'ff28f7de9b81b4673082a2640a318896')
 
 build() {
   local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
