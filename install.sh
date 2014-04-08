@@ -38,9 +38,8 @@ function remove_build() {
 
 function update_checksums() {
   echo "Updating checksums in $1"
-  {
-    newsums=$(makepkg -g -p "$1") && rm -f $1~ &&
-    exec awk -v newsums="$newsums" '
+  newsums=$(makepkg -g -p "$1") && rm -f $1~ &&
+  awk -v newsums="$newsums" '
     /^[[:blank:]]*(md|sha)[[:digit:]]+sums=/,/\)[[:blank:]]*(#.*)?$/ {
       if (!w) {
         print newsums
@@ -51,8 +50,7 @@ function update_checksums() {
 
     1
     END { if (!w) print newsums }
-    ' >> "$1~"
-  } < "$1"
+    ' "$1" > "$1~"
   local script=$(readlink -f $1)
   echo "Script: $script"
   mv -vf $1~ $script

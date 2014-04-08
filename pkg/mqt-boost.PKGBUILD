@@ -28,7 +28,7 @@ source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip')
 sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
           'a4a47cc5716df87d544ae7684aaf402287132d50'
-          '61c614e9feaf4b6e12019e7ae137c77321fc65d1'
+          'eade4c14d7bc9676e0cc1ee20c490ca4758b8613'
           '3cbc47339dafb9055f75227987bb74f78c1d957c')
 
 install=mqt-${pkgbase}.install
@@ -44,7 +44,7 @@ prepare() {
     patch -p0 -i ../002-circular_buffer.patch
 
     # Add an extra python version. This does not replace anything and python 2.x need to be the default.
-    echo "using python : 3.3 : /usr/bin/python3 : /usr/include/python3.3m : /usr/lib ;" \
+    echo "using python : 3.4 : /usr/bin/python3 : /usr/include/python3.4m : /usr/lib ;" \
         >> ./tools/build/v2/user-config.jam
 
     # Add boost/process
@@ -89,6 +89,7 @@ build() {
     "${_stagedir}"/bin/b2 \
       --build-dir=/tmp/boost \
       --layout=system \
+      --without-mpi \
       --prefix="${_stagedir}" \
       ${JOBS} \
       variant=release \
@@ -99,8 +100,8 @@ build() {
       link=shared \
       toolset=${TOOLSET} \
       python=2.7 \
-      cflags="${CFLAGS} -Wno-unused-local-typedefs -march=native" \
-      cxxflags="${CPPFLAGS} ${CFLAGS} -Wno-unused-local-typedefs -march=native" \
+      cflags="${CFLAGS} -g -Wno-unused-local-typedefs -march=native" \
+      cxxflags="${CPPFLAGS} ${CFLAGS} -g -Wno-unused-local-typedefs -march=native" \
       linkflags="${LDFLAGS}" \
       install
 

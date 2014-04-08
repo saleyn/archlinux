@@ -38,7 +38,7 @@ build() {
     --libdir=/usr/lib/odb \
     --with-pkgconfigdir=/usr/lib/pkgconfig \
     --with-libodb=/usr/lib \
-    --with-boost=/opt/env/prod/Boost/Current \
+    --with-boost=/opt/env/prod/Boost/Current/include \
     --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib
 
     #--prefix=/opt/pkg/${pkgbase}/${pkgver} \
