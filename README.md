@@ -26,6 +26,7 @@ pushd $_
 wget https://aur.archlinux.org/packages/pa/pacaur/PKGBUILD
 makepkg -i -s
 popd
+cd /tmp
 rm -fr /tmp/build
 ```
 
