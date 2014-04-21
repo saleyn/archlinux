@@ -8,7 +8,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=eixx
 pkgname=mqt-${pkgbase}
-pkgver=1.1.71
+pkgver=1.1.72
 pkgrel=1
 pkgdesc='Erlang C++ interface library'
 arch=('x86_64')
