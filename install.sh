@@ -18,6 +18,7 @@ function usage() {
   echo "  -C [Name]       - Clear the package-*.xz installation file"
   echo "  -t ToolChain    - Specify toolchain (gcc | clang | intel)"
   echo "  -U              - Update checksums of the given package(s)"
+  echo "  --force         - Bypass the conflict checks"
   echo "  --confirm       - No autoconfirm ([Y/n] prompting)"
   echo "  --debug         - Debug mode"
   exit 1
@@ -28,7 +29,7 @@ function remove_pkg() {
     echo "No pre-built package build/$1/$1*.xz found!" && \
     return
   echo "Deleting build/$1/$1*.xz"
-  rm -f build/$1/$1*.xz 
+  rm -f build/$1/$1*.xz
 }
 
 function remove_build() {
@@ -68,7 +69,7 @@ CONFIRM="--noconfirm"
 DOWNLOAD_ONLY=0
 DELETE_PKG=0
 DELETE_BUILD=0
-NOEXTRACT=""
+PACMAN_OPTS=""
 
 export CC=gcc
 export CXX=g++
@@ -118,7 +119,7 @@ while [ -n "$1" ]; do
             export CXXFLAGS="$OPT_CFLAGS"
             export FFLAGS="-O3 $FLAGS_LOCAL_GCC"
             ;;
-          intel) 
+          intel)
             export CC=gcc
             export CXX=g++
             export F77=gfortran
@@ -130,8 +131,9 @@ while [ -n "$1" ]; do
             exit 1;;
         esac;;
     -U) UPD_CHECKSUMS=1;;
-    -e|--noextract) NOEXTRACT="-e";;
+    -e|--noextract) PACMAN_OPTS+="-e";;
     --confirm)      CONFIRM="";;
+    --force)        PACMAN_OPTS+="--force";;
     --debug)        DEBUG=1;;
      *) echo "ERROR: unsupported option: $1"
         usage;;
@@ -147,7 +149,7 @@ elif (( (REMOVE | DELETE_PKG | DELETE_BUILD) && (INSTALL || DOWNLOAD_ONLY) )); t
   usage
 elif (( ALL_PKGS || (LISTONLY && ! PACKAGE) )); then
   FILTER='s/#.*$//; /^\s*$/d; p'
-elif [ -n "$BEGIN_PKG" ]; then 
+elif [ -n "$BEGIN_PKG" ]; then
   FILTER="s/#.*$//; /^\s*$/d; \!${BEGIN_PKG}!,\$p"
 elif (( PACKAGE )); then
   FILTER='s/#.*$//; /^\s*$/d;'
@@ -203,7 +205,7 @@ sed -n "$FILTER" Manifest | \
     [ -z "$repos"     ] && dirname=${array[1]:-${name^}} # Directory name under
                                                          #   /opt/env/prod
                                                          # defaults to ${name}
-                                                         # with first letter capitalized 
+                                                         # with first letter capitalized
     [ -z "$s" ] && continue
 
     if [ ! -f "$buildscript" -a "${repos}" != "aur" ]; then
@@ -218,7 +220,7 @@ sed -n "$FILTER" Manifest | \
     fi
 
     if (( REMOVE )); then
-      sudo pacman -Rnc $PKGNAME ${CONFIRM} || true
+      sudo pacman -Rnc $PKGNAME ${CONFIRM} ${PACMAN_OPTS} || true
       continue
     elif (( DELETE_PKG )); then
       remove_pkg $PKGNAME
@@ -235,7 +237,7 @@ sed -n "$FILTER" Manifest | \
     echo -en "\e[0;32;40m===> Processing package: $mqtname\n\e[0m"
 
     if [ "${repos}" = "aur" ]; then
-      pacaur -Syaq ${CONFIRM} --noedit ${mqtname} 
+      pacaur -Syaq ${CONFIRM} ${PACMAN_OPTS} --noedit ${mqtname}
       continue
     fi
 
@@ -262,14 +264,14 @@ sed -n "$FILTER" Manifest | \
     elif (( DOWNLOAD_ONLY )); then
       makepkg -L -s -o
     else
-      makepkg -L -s ${CONFIRM} ${NOEXTRACT}
+      makepkg -L -s ${CONFIRM} ${PACMAN_OPTS}
       PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
       [ -z "$PKG" ] && exit 1
     fi
 
     if (( INSTALL )); then
       echo -en "\e[0;32;40m===> Installing $PKG\n\e[0m"
-      makepkg -i -L ${CONFIRM}
+      makepkg -i -L ${CONFIRM} ${PACMAN_OPTS}
     fi
 
     popd > /dev/null 2>&1

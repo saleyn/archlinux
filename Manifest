@@ -6,6 +6,7 @@
 #===============================================
 usr/double-conversion
 usr/cfengine
+usr/jdk
 
 #======================================
 # Packages obtained from AUR repository

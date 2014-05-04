@@ -33,7 +33,7 @@ source=(
 # https://github.com/facebook/folly/issues/48
 md5sums=('SKIP'
          '4577b49f2973c90bf9ba69aa8166b786'
-         '6482cb8149b7e803897de8a5ca41d659')
+         'f6ec7ae87294f12cf1216b77b5601c18')
 
 install=mqt-${pkgbase}.install
 
@@ -86,7 +86,7 @@ build() {
     --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \
     --with-boost=/opt/env/prod/Boost/Current \
     --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib
-  make $JOBS V=0
+  make $JOBS
 }
 
 package() {
