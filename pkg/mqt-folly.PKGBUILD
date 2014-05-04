@@ -10,7 +10,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=folly
 pkgname=mqt-${pkgbase}
-pkgver=672.fbee7f6
+pkgver=706.b215baa
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
 arch=x86_64
@@ -33,7 +33,7 @@ source=(
 # https://github.com/facebook/folly/issues/48
 md5sums=('SKIP'
          '4577b49f2973c90bf9ba69aa8166b786'
-         'f6ec7ae87294f12cf1216b77b5601c18')
+         '6482cb8149b7e803897de8a5ca41d659')
 
 install=mqt-${pkgbase}.install
 
