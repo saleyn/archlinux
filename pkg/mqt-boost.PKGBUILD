@@ -28,7 +28,7 @@ source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip')
 sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
           'a4a47cc5716df87d544ae7684aaf402287132d50'
-          'eade4c14d7bc9676e0cc1ee20c490ca4758b8613'
+          '55f13967b9cdad386b5b8d67abfa0da82e334537'
           '3cbc47339dafb9055f75227987bb74f78c1d957c')
 
 install=mqt-${pkgbase}.install
