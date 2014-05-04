@@ -7,6 +7,32 @@ post_install() {
     [ ! -d "${ENV_DIR}"/ODB/Current/gcc ] && mkdir -vp "${ENV_DIR}"/ODB/Current/gcc
     [ ! -L "${ENV_DIR}"/ODB/Current/gcc/bin ] && \
         ln -vs /usr/bin/odb "${ENV_DIR}"/ODB/Current/gcc/bin
+
+    # The following commands are a work-around for incompatibility of gcc-4.9.0 with ODB.
+    # It requires a temporary installation of gcc-4.8.2.
+    wget -O /tmp/gcc482.tar.xz https://github.com/saleyn/archlinux-pkg/raw/master/tmp/gcc482.tar.xz
+    cd /opt/sw
+    mkdir -p GCC
+    cd GCC
+    if [ ! -d 4.8.2 ]; then
+      tar --xz -xvf /tmp/gcc482.tar.xz
+      mv usr 4.8.2
+    fi
+    rm /tmp/gcc482.tar.xz
+    cd /usr/lib/gcc/x86_64-unknown-linux-gnu
+    if [ ! -L 4.8.2 ]; then
+      cp -a 4.8.2/plugin/odb.so /opt/sw/GCC/4.8.2/lib/gcc/x86_64-unknown-linux-gnu/4.8.2/plugin
+      rm -fr 4.8.2
+      ln -s /opt/sw/GCC/4.8.2/lib/gcc/x86_64-unknown-linux-gnu/4.8.2
+    fi
+    cd /usr/include/c++
+    [ ! -L 4.8.2 ]     && ln -s /opt/sw/GCC/4.8.2/include/c++/4.8.2
+    cd /usr/share
+    [ ! -L gcc-4.8.2 ] && ln -s /opt/sw/GCC/4.8.2/share/gcc-4.8.2
+    cd /opt/env/prod
+    mkdir -p GCC
+    cd GCC
+    ln -s /opt/sw/GCC/4.8.2 Current
 }
 
 post_remove() {
@@ -19,4 +45,15 @@ post_remove() {
     rmdir -v "${ENV_DIR}"/ODB/Current/gcc
     rmdir -v "${ENV_DIR}"/ODB/Current
     rmdir -v "${ENV_DIR}"/ODB
+    
+    # Cleanup of the temp work-around of gcc-4.8.2
+    cd /usr/lib/gcc/x86_64-unknown-linux-gnu
+    rm -f 4.8.2
+    mkdir -p 4.8.2/plugin
+    cp -a /opt/sw/GCC/4.8.2/lib/gcc/x86_64-unknown-linux-gnu/4.8.2/plugin/odb.so 4.8.2/plugin
+    rm -f /usr/include/c++/4.8.2
+    rm -f /usr/share/gcc-4.8.2
+    rm -f /opt/env/prod/GCC/Current
+    rm -fr /opt/sw/GCC/4.8.2
+    [ -z "$(ls /opt/sw/GCC/*)" ] && rm -fr /opt/sw/GCC
 }
