@@ -14,8 +14,11 @@ post_install() {
     cd /opt/sw
     mkdir -p GCC
     cd GCC
-    tar --xz -xvf /tmp/gcc482.tar.xz
-    mv usr 4.8.2
+    if [ ! -d 4.8.2 ]; then
+      tar --xz -xvf /tmp/gcc482.tar.xz
+      mv usr 4.8.2
+    fi
+    rm /tmp/gcc482.tar.xz
     cd /usr/lib/gcc/x86_64-unknown-linux-gnu
     if [ ! -L 4.8.2 ]; then
       cp -a 4.8.2/plugin/odb.so /opt/sw/GCC/4.8.2/lib/gcc/x86_64-unknown-linux-gnu/4.8.2/plugin
