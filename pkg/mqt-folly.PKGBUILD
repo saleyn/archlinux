@@ -33,7 +33,7 @@ source=(
 # https://github.com/facebook/folly/issues/48
 md5sums=('SKIP'
          '4577b49f2973c90bf9ba69aa8166b786'
-         '6482cb8149b7e803897de8a5ca41d659')
+         'a221f1da04b382b70f74ed33c119aa9d')
 
 install=mqt-${pkgbase}.install
 

@@ -138,7 +138,7 @@ Q. Where are my packages being built?
 
 A. The packages are built in the ``build/PackageName`` directory, which is not part
    of the git tree. After a package is installed, you can clear the content of that
-   directory by running ``./install.sh -c PackageName``.
+   directory by running ``./install.sh -C PackageName``.
 
 Q. Which toolchains are supported?
 

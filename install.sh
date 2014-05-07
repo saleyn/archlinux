@@ -14,8 +14,8 @@ function usage() {
   echo "  -e, --noextract - Don't extract package, use existing src content"
   echo "  -D              - Download only (no build/install)"
   echo "  -R              - Remove the package(s)"
-  echo "  -c [Name]       - Clear build directory for the given package"
-  echo "  -C [Name]       - Clear the package-*.xz installation file"
+  echo "  -C [Name]       - Clear build directory for the given package"
+  echo "  -c [Name]       - Clear the package-*.xz installation file"
   echo "  -t ToolChain    - Specify toolchain (gcc | clang | intel)"
   echo "  -U              - Update checksums of the given package(s)"
   echo "  --force         - Bypass the conflict checks"
@@ -92,14 +92,14 @@ while [ -n "$1" ]; do
     -a) PACKAGE=1; ALL_PKGS=1;;
     -b) shift; PACKAGE=1; BEGIN_PKG="$1";;
     -p) shift; PACKAGE=1; IFS=, read -ra p <<< "$1"; PKGS+=("${p[@]}"); unset p;;
-    -c) DELETE_BUILD=1
-        [ "${2:0:1}" = '-' ] && break
+    -C) DELETE_BUILD=1
         shift
+        [ "${1:0:1}" = '-' ] && continue
         remove_build $1
         exit 0;;
-    -C) DELETE_PKG=1
-        [ "${2:0:1}" = '-' ] && break
+    -c) DELETE_PKG=1
         shift
+        [ "${1:0:1}" = '-' ] && continue
         remove_pkg $1 || exit 1
         exit 0;;
     -s) shift
@@ -141,12 +141,10 @@ while [ -n "$1" ]; do
   shift
 done
 
-if (( INSTALL && ! PACKAGE )); then
+if (( (INSTALL || DELETE_BUILD || DELETE_PKG) && ! PACKAGE )); then
   echo "No packages specified!"
-  usage
 elif (( (REMOVE | DELETE_PKG | DELETE_BUILD) && (INSTALL || DOWNLOAD_ONLY) )); then
   echo "Conflicting flags: (-R | -c | -C) and (-i | -D)"
-  usage
 elif (( ALL_PKGS || (LISTONLY && ! PACKAGE) )); then
   FILTER='s/#.*$//; /^\s*$/d; p'
 elif [ -n "$BEGIN_PKG" ]; then
@@ -181,6 +179,7 @@ TOOLSET_SFX="-${TOOLCHAIN:-gcc}"
 
 if [ -z "$(sed -n "$FILTER" Manifest)" ]; then
   echo "No matching packages found in Manifest!"
+  echo "    Filter: $FILTER"
   exit 1
 fi
 
