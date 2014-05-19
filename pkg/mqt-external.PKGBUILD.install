@@ -6,7 +6,7 @@ post_install() {
 
     [ ! -d "${ENV_DIR}"/ODB/Current/gcc ] && mkdir -vp "${ENV_DIR}"/ODB/Current/gcc
     [ ! -L "${ENV_DIR}"/ODB/Current/gcc/bin ] && \
-        ln -vs /usr/bin/odb "${ENV_DIR}"/ODB/Current/gcc/bin
+        cd "${ENV_DIR}"/ODB/Current/gcc && ln -vs /usr/bin
 
     # The following commands are a work-around for incompatibility of gcc-4.9.0 with ODB.
     # It requires a temporary installation of gcc-4.8.2.
