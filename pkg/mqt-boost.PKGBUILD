@@ -25,10 +25,12 @@ makedepends=('icu>=52.1' 'python' 'python2' 'bzip2' 'zlib')
 source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz"
         '001-log_fix_dump_avx2.patch::https://projects.archlinux.org/svntogit/packages.git/plain/trunk/001-log_fix_dump_avx2.patch?h=packages/boost'
         '002-circular_buffer.patch::https://github.com/boostorg/circular_buffer/commit/f5303c70d813b993097ab1c376ac0612b2613b4f.patch'
+        'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.55.0...message-queue.patch'
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip')
 sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
           'a4a47cc5716df87d544ae7684aaf402287132d50'
-          '55f13967b9cdad386b5b8d67abfa0da82e334537'
+          'SKIP'
+          'SKIP'
           '3cbc47339dafb9055f75227987bb74f78c1d957c')
 
 install=mqt-${pkgbase}.install
@@ -39,6 +41,8 @@ prepare() {
     cd ${pkgbase}_${_boostver}
 
     patch -p0 -i ../001-log_fix_dump_avx2.patch
+    patch -p2 -i ../message-queue.patch
+
     sed -i '{s!^\([-+]\{3\}\) ./include/!\1 !; s!^\([-+]\{3\}\) ./test/!\1 libs/circular_buffer/test/!p}' \
         ../002-circular_buffer.patch
     patch -p0 -i ../002-circular_buffer.patch

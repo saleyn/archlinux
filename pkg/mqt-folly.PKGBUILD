@@ -28,12 +28,14 @@ source=(
   git+https://github.com/facebook/folly.git
   http://googletest.googlecode.com/files/${GTEST}.zip
   https://github.com/saleyn/folly/compare/atomic-hash-allocator.patch
+  atomic-hash-map.patch::https://github.com/saleyn/folly/compare/atomic-hash-allocator...atomic-hash-map.patch
 )
 # that sucks that the project downloads gtests sources, it should use system libraries
 # https://github.com/facebook/folly/issues/48
 md5sums=('SKIP'
          '4577b49f2973c90bf9ba69aa8166b786'
-         'a221f1da04b382b70f74ed33c119aa9d')
+         'SKIP'
+         'SKIP')
 
 install=mqt-${pkgbase}.install
 
@@ -49,7 +51,8 @@ pkgver() {
 
 prepare() {
   cd folly
-  patch -p1 < ../atomic-hash-allocator.patch
+  patch --verbose -p1 < ../atomic-hash-allocator.patch
+  patch --verbose -p1 < ../atomic-hash-map.patch
 
   cd folly
   find -name '*.py' -exec sed -i 's|^#!/usr/bin/env python$|#!/usr/bin/env python2|' {} \;
