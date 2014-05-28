@@ -41,6 +41,7 @@ mqt-eixx            eixx
 mqt-armadillo
 mqt-libodb-boost    ODB
 mqt-zeromq          ZeroMQ
+mqt-erl-libs        erl-libs
 
 usr/odb             ODB
 usr/scribe          # Needs to be installed after boost and thrift

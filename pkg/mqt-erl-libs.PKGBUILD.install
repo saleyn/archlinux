@@ -1,0 +1,19 @@
+ENV_DIR="${pkgdir}"/opt/env/prod/erl-libs
+INSTALL_DIR="${pkgdir}"/opt/pkg/erl-libs/current
+
+post_install() {
+    echo "New package version: $1"
+    echo "Env dir            : ${ENV_DIR}"
+    echo "Install dir        : ${INSTALL_DIR}"
+
+    mkdir -p "${ENV_DIR}"
+    rm    -f "${ENV_DIR}"/Current
+    cd       "${ENV_DIR}"
+    ln -s ${INSTALL_DIR} Current
+}
+
+post_remove() {
+    echo "Checking ${INSTALL_DIR}"
+    [ ! -d "${INSTALL_DIR}" ] && rm -f "${ENV_DIR}"/Current
+    [ ! -d "${pkgdir}"/opt/pkg/erl-libs ] && rm -rf "${ENV_DIR}"
+}
