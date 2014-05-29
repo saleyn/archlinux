@@ -24,10 +24,12 @@ source=(
   git+https://github.com/saleyn/gen_timed_server
   git+https://github.com/uwiger/gproc.git
   git+https://github.com/basho/lager.git
+  git+https://github.com/DeadZen/goldrush.git
 )
 # that sucks that the project downloads gtests sources, it should use system libraries
 # https://github.com/facebook/folly/issues/48
 md5sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -40,6 +42,9 @@ install=mqt-${pkgbase}.install
 
 prepare() {
   rm util/src/decompiler.erl
+  mkdir -p "lager/deps"
+  cd lager/deps
+  ln -s ../../goldrush
 }
 
 build() {
