@@ -18,7 +18,7 @@ license=(Apache)
 GTEST=gtest-1.6.0
 makedepends=(git rebar)
 source=(
-  emysql::git+https://github.com/gar1t/Emysql
+  emysql::git+https://github.com/Eonblast/Emysql.git
   git+https://github.com/saleyn/erlexec
   git+https://github.com/saleyn/util
   git+https://github.com/saleyn/gen_timed_server
