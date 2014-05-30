@@ -25,10 +25,17 @@ source=(
   git+https://github.com/uwiger/gproc.git
   git+https://github.com/basho/lager.git
   git+https://github.com/DeadZen/goldrush.git
+  git+https://github.com/mochi/mochiweb.git
+  git+https://github.com/davisp/jiffy.git
+  git+https://github.com/manopapad/proper.git
+  git+https://github.com/saleyn/getopt.git#branch=format_error
 )
-# that sucks that the project downloads gtests sources, it should use system libraries
-# https://github.com/facebook/folly/issues/48
+
 md5sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -42,9 +49,15 @@ install=mqt-${pkgbase}.install
 
 prepare() {
   rm util/src/decompiler.erl
+  cd $srcdir
   mkdir -p "lager/deps"
-  cd lager/deps
+  cd $srcdir/lager/deps
   ln -s ../../goldrush
+
+  cd $srcdir
+  mkdir -p jiffy/deps
+  cd $srcdir/jiffy/deps
+  ln -s ../../proper
 }
 
 build() {
@@ -53,12 +66,17 @@ build() {
 
   rm -f ../${pkgbase}*.log.*
 
-  cd "$srcdir"/emysql  && make $JOBS
-  cd "$srcdir"/erlexec && make $JOBS
-  cd "$srcdir"/util    && make $JOBS
-  cd "$srcdir"/gen_timed_server && make $JOBS
-  cd "$srcdir"/gproc   && make $JOBS
-  cd "$srcdir"/lager   && make $JOBS
+  for d in $(find ${srcdir} -type d -maxdepth 1 -not -name src -not -name pkg -printf "%f\n")
+  do
+    case $d in
+      proper)   cd ${srcdir}/$d && make fast;;
+      *)        cd ${srcdir}/$d && make $JOBS;;
+    esac
+  done
+}
+
+inst_dir() {
+  echo "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$d-$(git describe --always --tags --abbrev=0 | sed 's/^v//')"
 }
 
 package() {
@@ -66,38 +84,31 @@ package() {
   echo "==== Packaging emysql ==="
   BASE="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}"
 
-  cd "${srcdir}"/emysql
-  DIR="${BASE}/emysql-$(awk -F= '/^VERSION/{print $2; exit}' Makefile)"
-  mkdir -p $DIR
-  for i in ebin/*.{app,beam} include/*.hrl src/*.erl; do install -m 644 -D $i $DIR/$i; done
+  for d in $(find ${srcdir} -type d -maxdepth 1 -not -name src -not -name pkg -printf "%f\n")
+  do
+    cd "${srcdir}"/$d
+    DIR=$(inst_dir)
+    mkdir -p $DIR
+    INC="ebin/*.app ebin/*.beam src/*.erl"
+    [ -d "include" ] && INC+=" $(find include -type f -name '*.hrl' -maxdepth 1)"
+    [ -d "test"    ] && INC+=" $(find test    -type f -name '*.erl' -maxdepth 1)"
+    [ -d "priv"    ] && INC+=" $(find priv    -type f -maxdepth 1)"
+    for i in $INC; do  install -m 644 -D $i $DIR/$i; done
+  done
   
   cd "${srcdir}"/erlexec
-  DIR="${BASE}/erlexec-$(git describe --always --tags --abbrev=0 | sed 's/^v//')"
-  mkdir -p $DIR
-  for i in ebin/*.{app,beam} include/*.hrl priv/*/* src/*.erl; do install -m 644 -D $i $DIR/$i; done
-
-  cd "${srcdir}"/util
-  DIR="${BASE}/util-1.0"
-  mkdir -p $DIR
-  for i in ebin/*.{app,beam} include/*.hrl src/*.erl; do install -m 644 -D $i $DIR/$i; done
-
-  cd "${srcdir}"/gen_timed_server
-  DIR="${BASE}/gen_timed_server-1.0"
-  mkdir -p $DIR
-  for i in ebin/*.{app,beam} src/*.erl; do install -m 644 -D $i $DIR/$i; done
-
-  cd "${srcdir}"/util
-  DIR="${BASE}/gproc-1.0"
-  mkdir -p $DIR
-  for i in ebin/*.{app,beam} include/*.hrl src/*.erl; do install -m 644 -D $i $DIR/$i; done
+  DIR=$(inst_dir)
+  for i in priv/*/*; do install -m 644 -D $i $DIR/$i; done
 
   cd "${srcdir}"/lager
-  DIR="${BASE}/lager-1.0"
-  mkdir -p $DIR
-  for i in  ebin/*.{app,beam} include/*.hrl src/*.erl test/*.erl \
-            deps/goldrush/ebin/*.{app,beam} deps/goldrush/src/*.erl; do
+  DIR=$(inst_dir)
+  for i in deps/goldrush/ebin/*.{app,beam} deps/goldrush/src/*.erl; do
     install -m 644 -D $i $DIR/$i
   done
+
+  cd "${srcdir}"/mochiweb
+  DIR=$(inst_dir)
+  for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
 
   cd "${pkgdir}"/opt/pkg/${pkgbase}
   ln -vs ${pkgver} current
