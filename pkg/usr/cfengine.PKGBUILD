@@ -19,7 +19,7 @@ source=("${pkgname}-${pkgver}.tar.gz::http://cfengine.com/source-code/download?f
         'https://raw.githubusercontent.com/zizzfizzix/pkgbuilds/master/cfengine/cf-execd.service'
         'https://raw.githubusercontent.com/zizzfizzix/pkgbuilds/master/cfengine/cf-monitord.service'
         'https://raw.githubusercontent.com/zizzfizzix/pkgbuilds/master/cfengine/cf-serverd.service')
-md5sums=('7b73fecf2238c5f8afc9ca8ecb30e02f'
+md5sums=('8171347ef4d365a1f621ebbc1d5b33b8'
          'dba17dc5133b8fa86de11577120d46c5'
          'a2f9db31408f288cb934397ffb474db3'
          'ff28f7de9b81b4673082a2640a318896')

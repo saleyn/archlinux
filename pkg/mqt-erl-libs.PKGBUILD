@@ -66,7 +66,7 @@ build() {
 
   rm -f ../${pkgbase}*.log.*
 
-  for d in $(find ${srcdir} -type d -maxdepth 1 -not -name src -not -name pkg -printf "%f\n")
+  for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -printf "%f\n")
   do
     case $d in
       proper)   cd ${srcdir}/$d && make fast;;
@@ -76,7 +76,7 @@ build() {
 }
 
 inst_dir() {
-  echo "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$d-$(git describe --always --tags --abbrev=0 | sed 's/^v//')"
+  echo "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$1-$(git describe --always --tags --abbrev=0 | sed 's/^v//')"
 }
 
 package() {
@@ -84,30 +84,28 @@ package() {
   echo "==== Packaging emysql ==="
   BASE="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}"
 
-  for d in $(find ${srcdir} -type d -maxdepth 1 -not -name src -not -name pkg -printf "%f\n")
+  for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -printf "%f\n")
   do
     cd "${srcdir}"/$d
-    DIR=$(inst_dir)
+    DIR=$(inst_dir $d)
     mkdir -p $DIR
     INC="ebin/*.app ebin/*.beam src/*.erl"
     [ -d "include" ] && INC+=" $(find include -type f -name '*.hrl' -maxdepth 1)"
     [ -d "test"    ] && INC+=" $(find test    -type f -name '*.erl' -maxdepth 1)"
     [ -d "priv"    ] && INC+=" $(find priv    -type f -maxdepth 1)"
-    for i in $INC; do  install -m 644 -D $i $DIR/$i; done
+    for i in $INC; do install -m 644 -D $i $DIR/$i; done
+    #if [ -d "deps" ]; then
+    #  cd deps
+    #  for i in */ebin/*.{app,beam} */src/*.erl; do install -v -m 644 -D $i $DIR/deps/$i; done
+    #fi
   done
   
   cd "${srcdir}"/erlexec
-  DIR=$(inst_dir)
+  DIR=$(inst_dir erlexec)
   for i in priv/*/*; do install -m 644 -D $i $DIR/$i; done
 
-  cd "${srcdir}"/lager
-  DIR=$(inst_dir)
-  for i in deps/goldrush/ebin/*.{app,beam} deps/goldrush/src/*.erl; do
-    install -m 644 -D $i $DIR/$i
-  done
-
   cd "${srcdir}"/mochiweb
-  DIR=$(inst_dir)
+  DIR=$(inst_dir mochiweb)
   for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
 
   cd "${pkgdir}"/opt/pkg/${pkgbase}
