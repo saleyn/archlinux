@@ -12,6 +12,7 @@ function usage() {
   echo "  -p Name[,Name]  - Process selected package(s)"
   echo "  -b Name         - Process packages beginning with Name"
   echo "  -e, --noextract - Don't extract package, use existing src content"
+  echo "  -r, --repackage - Repackage without rebuilding"
   echo "  -D              - Download only (no build/install)"
   echo "  -R              - Remove the package(s)"
   echo "  -C [Name]       - Clear build directory for the given package"
@@ -131,9 +132,10 @@ while [ -n "$1" ]; do
             exit 1;;
         esac;;
     -U) UPD_CHECKSUMS=1;;
-    -e|--noextract) PACMAN_OPTS+="-e";;
+    -e|--noextract) PACMAN_OPTS+=" -e";;
+    -r|--repackage) PACMAN_OPTS+=" -r";;
     --confirm)      CONFIRM="";;
-    --force)        PACMAN_OPTS+="--force";;
+    --force)        PACMAN_OPTS+=" --force";;
     --debug)        DEBUG=1;;
      *) echo "ERROR: unsupported option: $1"
         usage;;

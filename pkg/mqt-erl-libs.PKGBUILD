@@ -16,8 +16,9 @@ pkgdesc='Collection of open-source Erlang libraries'
 arch=x86_64
 license=(Apache)
 GTEST=gtest-1.6.0
-makedepends=(git rebar)
+makedepends=(git rebar saxon-he)
 source=(
+  git+https://github.com/saleyn/erlfix.git
   emysql::git+https://github.com/Eonblast/Emysql.git
   git+https://github.com/saleyn/erlexec
   git+https://github.com/saleyn/util
@@ -32,6 +33,7 @@ source=(
 )
 
 md5sums=(
+  'SKIP'
   'SKIP'
   'SKIP'
   'SKIP'
@@ -89,11 +91,16 @@ package() {
     cd "${srcdir}"/$d
     DIR=$(inst_dir $d)
     mkdir -p $DIR
-    INC="ebin/*.app ebin/*.beam src/*.erl"
+    INC=""
+    [ -d "bin"     ] && INC+=" $(find bin     -type f -maxdepth 1)"
+    [ -d "ebin"    ] && INC+=" $(find ebin    -type f \( -name '*.app' -o -name '*.beam' \) -maxdepth 1)"
+    [ -d "src"     ] && INC+=" $(find src     -type f -maxdepth 1)"
     [ -d "include" ] && INC+=" $(find include -type f -name '*.hrl' -maxdepth 1)"
     [ -d "test"    ] && INC+=" $(find test    -type f -name '*.erl' -maxdepth 1)"
     [ -d "priv"    ] && INC+=" $(find priv    -type f -maxdepth 1)"
-    for i in $INC; do install -m 644 -D $i $DIR/$i; done
+    for i in $INC; do
+      install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/$i;
+    done
     #if [ -d "deps" ]; then
     #  cd deps
     #  for i in */ebin/*.{app,beam} */src/*.erl; do install -v -m 644 -D $i $DIR/deps/$i; done

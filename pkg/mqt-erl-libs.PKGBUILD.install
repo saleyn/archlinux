@@ -10,10 +10,14 @@ post_install() {
     rm    -f "${ENV_DIR}"/Current
     cd       "${ENV_DIR}"
     ln -s ${INSTALL_DIR} Current
+
+    cd "${pkgdir}"/opt/bin
+    ln -s ${INSTALL_DIR}/erlfix-*/bin/fixprint.es
 }
 
 post_remove() {
     echo "Checking ${INSTALL_DIR}"
-    [ ! -d "${INSTALL_DIR}" ] && rm -f "${ENV_DIR}"/Current
-    [ ! -d "${pkgdir}"/opt/pkg/erl-libs ] && rm -rf "${ENV_DIR}"
+    [ ! -d "${INSTALL_DIR}"              ] && rm -f  "${ENV_DIR}"/Current
+    [ ! -d "${pkgdir}"/opt/pkg/erl-libs  ] && rm -rf "${ENV_DIR}"
+    [ -L "${pkgdir}"/opt/bin/fixprint.es ] && rm -f  "${pkgdir}"/opt/bin/fixprint.es
 }
