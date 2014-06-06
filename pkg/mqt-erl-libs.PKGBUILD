@@ -19,6 +19,8 @@ GTEST=gtest-1.6.0
 makedepends=(git rebar saxon-he)
 source=(
   git+https://github.com/saleyn/erlfix.git
+  git+https://github.com/esl/edown.git
+  git+https://github.com/esl/parse_trans.git
   git+https://github.com/extend/sheriff.git
   emysql::git+https://github.com/Eonblast/Emysql.git
   git+https://github.com/saleyn/erlexec
@@ -33,20 +35,7 @@ source=(
   git+https://github.com/saleyn/getopt.git#branch=format_error
 )
 
-md5sums=(
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-  'SKIP'
-)
+md5sums=( $(for i in `seq 1 ${#source[@]}`; do echo 'SKIP'; done) )
 
 install=mqt-${pkgbase}.install
 
@@ -61,6 +50,17 @@ prepare() {
   mkdir -p jiffy/deps
   cd $srcdir/jiffy/deps
   ln -s ../../proper
+
+  cd $srcdir
+  mkdir -p parse_trans/deps
+  cd $srcdir/parse_trans/deps
+  ln -s ../../edown
+
+  cd $srcdir
+  mkdir -p sheriff/deps
+  cd $srcdir/sheriff/deps
+  ln -s ../../parse_trans
+  ln -s ../../edown
 }
 
 build() {
@@ -73,7 +73,9 @@ build() {
   do
     case $d in
       proper)   cd ${srcdir}/$d && make fast;;
-      *)        cd ${srcdir}/$d && make $JOBS;;
+      *)        cd ${srcdir}/$d
+                echo "Making $d ($PWD})"
+                make $JOBS;;
     esac
   done
 }
