@@ -19,6 +19,7 @@ GTEST=gtest-1.6.0
 makedepends=(git rebar saxon-he)
 source=(
   git+https://github.com/saleyn/erlfix.git
+  git+https://github.com/extend/sheriff.git
   emysql::git+https://github.com/Eonblast/Emysql.git
   git+https://github.com/saleyn/erlexec
   git+https://github.com/saleyn/util

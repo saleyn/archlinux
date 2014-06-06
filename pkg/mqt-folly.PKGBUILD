@@ -27,7 +27,7 @@ options=(staticlibs buildflags makeflags)
 source=(
   git+https://github.com/facebook/folly.git
   http://googletest.googlecode.com/files/${GTEST}.zip
-  https://github.com/saleyn/folly/compare/atomic-hash-allocator.patch
+  https://github.com/saleyn/folly/compare/atomic-hashmap.patch
 )
 # that sucks that the project downloads gtests sources, it should use system libraries
 # https://github.com/facebook/folly/issues/48
@@ -49,8 +49,7 @@ pkgver() {
 
 prepare() {
   cd folly
-  patch -p1 < ../atomic-hash-allocator.patch
-  patch -p1 < ../atomic-hash-map.patch
+  patch -p1 < ../atomic-hashmap.patch
 
   cd folly
   find -name '*.py' -exec sed -i 's|^#!/usr/bin/env python$|#!/usr/bin/env python2|' {} \;
