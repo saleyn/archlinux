@@ -112,7 +112,7 @@ package() {
   
   cd "${srcdir}"/erlexec
   DIR=$(inst_dir erlexec)
-  for i in priv/*/*; do install -m 644 -D $i $DIR/$i; done
+  for i in priv/*/*; do install -m 755 -D $i $DIR/$i; done
 
   cd "${srcdir}"/mochiweb
   DIR=$(inst_dir mochiweb)

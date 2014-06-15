@@ -22,14 +22,22 @@ optdepends=('python2: to use Python bindings'
             'perl: to use Perl bindings'
             'perl-bit-vector: to use Perl bindings')
 options=(!emptydirs staticlibs buildflags makeflags)
-source=("https://github.com/saleyn/thrift/archive/mqt-${pkgver}.zip")
-md5sums=('5ee6b49f8b3e37a71d86dc7541c1aa04')
+source=("https://github.com/saleyn/thrift/archive/mqt-${pkgver}.zip"
+        "https://issues.apache.org/jira/secure/attachment/12632477/yylex.patch"
+       )
+md5sums=('5ee6b49f8b3e37a71d86dc7541c1aa04'
+         'f2c9d4b464b372fa3e80f856624f49c9')
 
 install=mqt-${pkgbase}.install
 
 ENV_DIR=/opt/env/prod
 INSTALL_DIR=/opt/pkg
 THRIFT_DIR="${INSTALL_DIR}"/${pkgbase}/${pkgver}
+
+prepare() {
+  cd $srcdir/$pkgbase-mqt-$pkgver
+  patch -p1 < ../yylex.patch
+}
 
 build() {
 
