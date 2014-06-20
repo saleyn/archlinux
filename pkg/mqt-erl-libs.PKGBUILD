@@ -18,6 +18,8 @@ license=(Apache)
 GTEST=gtest-1.6.0
 makedepends=(git rebar saxon-he)
 source=(
+  git+https://github.com/erlware/rebar_vsn_plugin.git
+  git+https://github.com/erlware/erlcron.git
   git+https://github.com/saleyn/erlfix.git
   git+https://github.com/esl/edown.git
   git+https://github.com/esl/parse_trans.git
@@ -61,6 +63,11 @@ prepare() {
   cd $srcdir/sheriff/deps
   ln -s ../../parse_trans
   ln -s ../../edown
+
+  cd $srcdir
+  mkdir -p erlcron/deps
+  cd $srcdir/erlcron/deps
+  ln -s ../../rebar_vsn_plugin
 }
 
 build() {
@@ -72,10 +79,12 @@ build() {
   for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -printf "%f\n")
   do
     case $d in
-      proper)   cd ${srcdir}/$d && make fast;;
-      *)        cd ${srcdir}/$d
-                echo "Making $d ($PWD})"
-                make $JOBS;;
+      proper)           cd ${srcdir}/$d && make fast;;
+      rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
+      erlcron)          cd ${srcdir}/$d && make compile;;
+      *)                cd ${srcdir}/$d
+                        echo "Making $d ($PWD})"
+                        make $JOBS;;
     esac
   done
 }
