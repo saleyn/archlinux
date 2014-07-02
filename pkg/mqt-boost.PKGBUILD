@@ -26,9 +26,12 @@ source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar
         '001-log_fix_dump_avx2.patch::https://projects.archlinux.org/svntogit/packages.git/plain/trunk/001-log_fix_dump_avx2.patch?h=packages/boost'
         '002-circular_buffer.patch::https://github.com/boostorg/circular_buffer/commit/f5303c70d813b993097ab1c376ac0612b2613b4f.patch'
         'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.55.0...message-queue.patch'
-        'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip')
+        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.55.0...node-allocator.patch'
+        'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip'
+        )
 sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
           'a4a47cc5716df87d544ae7684aaf402287132d50'
+          'SKIP'
           'SKIP'
           'SKIP'
           '3cbc47339dafb9055f75227987bb74f78c1d957c')
