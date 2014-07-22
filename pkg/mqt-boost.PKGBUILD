@@ -26,7 +26,7 @@ source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar
         '001-log_fix_dump_avx2.patch::https://projects.archlinux.org/svntogit/packages.git/plain/trunk/001-log_fix_dump_avx2.patch?h=packages/boost'
         '002-circular_buffer.patch::https://github.com/boostorg/circular_buffer/commit/f5303c70d813b993097ab1c376ac0612b2613b4f.patch'
         'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.55.0...message-queue.patch'
-        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/node-allocator.patch'
+        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/saleyn:master...node-allocator.patch'
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip'
         )
 sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
@@ -38,18 +38,23 @@ sha1sums=('61ed0e57d3c7c8985805bb0682de3f4c65f4b6e5'
 
 install=mqt-${pkgbase}.install
 
+apply_patch() {
+    msg "Applying patch (strip $1) $2"
+    patch -p$1 -i $2
+}
+
 prepare() {
     echo "Preparing ${pkgname} build"
     export _stagedir="${srcdir}/stagedir"
     cd ${pkgbase}_${_boostver}
 
-    patch -p0 -i ../001-log_fix_dump_avx2.patch
-    patch -p2 -i ../message-queue.patch
+    apply_patch 0 ../001-log_fix_dump_avx2.patch
+    apply_patch 2 ../message-queue.patch
 
     sed -i '{s!^\([-+]\{3\}\) ./include/!\1 !; s!^\([-+]\{3\}\) ./test/!\1 libs/circular_buffer/test/!p}' \
         ../002-circular_buffer.patch
-    patch -p0 -i ../002-circular_buffer.patch
-    patch -p2 -i ../node-allocator.patch
+    apply_patch 0 ../002-circular_buffer.patch
+    apply_patch 2 ../node-allocator.patch
 
     # Add an extra python version. This does not replace anything and python 2.x need to be the default.
     echo "using python : 3.4 : /usr/bin/python3 : /usr/include/python3.4m : /usr/lib ;" \
