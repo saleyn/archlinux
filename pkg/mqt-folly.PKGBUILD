@@ -10,7 +10,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=folly
 pkgname=mqt-${pkgbase}
-pkgver=763.527ce88
+pkgver=896.6e46d46
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
 arch=x86_64
@@ -25,15 +25,17 @@ GTEST=gtest-1.6.0
 makedepends=(git mqt-boost google-gflags double-conversion python2)
 options=(staticlibs buildflags makeflags)
 source=(
-  git+https://github.com/facebook/folly.git
+  https://github.com/saleyn/folly.git#branch=atomic-hashmap
+#  git+https://github.com/facebook/folly.git
   http://googletest.googlecode.com/files/${GTEST}.zip
-  https://github.com/saleyn/folly/compare/atomic-hashmap.patch
+#  https://github.com/saleyn/folly/compare/atomic-hashmap.patch
 )
 # that sucks that the project downloads gtests sources, it should use system libraries
 # https://github.com/facebook/folly/issues/48
 md5sums=('SKIP'
          '4577b49f2973c90bf9ba69aa8166b786'
-         'SKIP')
+         #'SKIP'
+         )
 
 install=mqt-${pkgbase}.install
 
@@ -49,7 +51,7 @@ pkgver() {
 
 prepare() {
   cd folly
-  patch -p1 < ../atomic-hashmap.patch
+#patch -p1 < ../atomic-hashmap.patch
 
   cd folly
   find -name '*.py' -exec sed -i 's|^#!/usr/bin/env python$|#!/usr/bin/env python2|' {} \;
