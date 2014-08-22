@@ -10,7 +10,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=folly
 pkgname=mqt-${pkgbase}
-pkgver=896.6e46d46
+pkgver=904.b704b8c
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
 arch=x86_64
@@ -25,7 +25,7 @@ GTEST=gtest-1.6.0
 makedepends=(git mqt-boost google-gflags double-conversion python2)
 options=(staticlibs buildflags makeflags)
 source=(
-  https://github.com/saleyn/folly.git#branch=atomic-hashmap
+  folly::git+https://github.com/saleyn/folly.git#branch=atomic-hashmap
 #  git+https://github.com/facebook/folly.git
   http://googletest.googlecode.com/files/${GTEST}.zip
 #  https://github.com/saleyn/folly/compare/atomic-hashmap.patch
@@ -50,7 +50,7 @@ pkgver() {
 }
 
 prepare() {
-  cd folly
+  cd ${srcdir}/folly
 #patch -p1 < ../atomic-hashmap.patch
 
   cd folly
