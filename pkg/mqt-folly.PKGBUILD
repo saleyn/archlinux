@@ -102,5 +102,5 @@ package() {
   ln -vs ${pkgver} current
 
   # remove gtest libraries installed by the package
-  rm "$pkgdir"/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET}/lib/{libgtest,libgtestmain}.a
+  rm -f "$pkgdir"/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET}/lib/{libgtest,libgtestmain}.a
 }
