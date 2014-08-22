@@ -24,7 +24,7 @@ options=(buildflags makeflags)
 makedepends=('icu>=53.1' 'python' 'python2' 'bzip2' 'zlib')
 source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz"
         'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.55.0...message-queue.patch'
-        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/node-allocator.patch'
+        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/saleyn:master...node-allocator.patch'
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip'
         )
 sha1sums=('1639723c6bdff873cdb6d747f8f8c9d9f066434d'
@@ -35,17 +35,18 @@ sha1sums=('1639723c6bdff873cdb6d747f8f8c9d9f066434d'
 
 install=mqt-${pkgbase}.install
 
+apply_patch() {
+    msg "Applying patch (strip $1) $2"
+    patch -p$1 -i $2
+}
+
 prepare() {
     echo "Preparing ${pkgname} build"
     export _stagedir="${srcdir}/stagedir"
     cd ${pkgbase}_${_boostver}
 
-    patch -p2 -i ../message-queue.patch
-    patch -p2 -i ../node-allocator.patch
-
-    # Add an extra python version. This does not replace anything and python 2.x need to be the default.
-    #echo "using python : 3.4 : /usr/bin/python3 : /usr/include/python3.4m : /usr/lib ;" \
-    #        >> ./tools/build/v2/user-config.jam
+    apply_patch 2 ../message-queue.patch
+    apply_patch 2 ../node-allocator.patch
 
     # Add boost/process
     echo "Adding boost/process"
