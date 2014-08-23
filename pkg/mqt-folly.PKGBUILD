@@ -10,7 +10,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=folly
 pkgname=mqt-${pkgbase}
-pkgver=896.6e46d46
+pkgver=3.2.896
 pkgrel=1
 pkgdesc='Folly is an open-source C++ library developed and used at Facebook'
 arch=x86_64
@@ -41,12 +41,7 @@ install=mqt-${pkgbase}.install
 
 pkgver() {
   cd ${pkgbase}
-  v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
-  if [ -n "$v" ]; then
-    printf "%s" $v
-  else
-    printf "%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-  fi
+  printf "%s.%s" "$(sed 's/:/./g' folly/VERSION)" "$(git rev-list --count HEAD)"
 }
 
 prepare() {
