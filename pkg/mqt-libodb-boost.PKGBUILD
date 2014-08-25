@@ -32,6 +32,8 @@ build() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
+#  CPPFLAGS=-I/opt/env/prod/Boost/Current/include LDFLAGS=-L/opt/env/prod/Boost/Current/${TOOLSET}/lib \
+  LDFLAGS="-Wl,-rpath,/opt/env/prod/Boost/Current/gcc/lib" \
   ./configure \
     --enable-silent-rules \
     --enable-optimize \
