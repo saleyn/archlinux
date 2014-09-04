@@ -30,6 +30,13 @@ build() {
 
   cd "${srcdir}/${pkgbase}-${pkgver}"
 
+  # XXX: Use 4.8.x g++ compiler but still the NEWEST libstdc++:
+  env \
+  CC=/opt/env/prod/GCC/Current/bin/gcc \
+  CXX=/opt/env/prod/GCC/Current/bin/g++ \
+  CFLAGS="-O3 -march=native -L/usr/lib" \
+  CXXFLAGS="-O3 -march=native -L/usr/lib" \
+  LDFLAGS="-lstdc++"    \
   ./configure \
     --enable-silent-rules \
     --enable-optimize \

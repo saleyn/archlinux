@@ -40,7 +40,7 @@ mqt-utxx            utxx
 mqt-eixx            eixx
 mqt-armadillo
 mqt-libodb-boost    ODB
-mqt-zeromq          ZeroMQ
+#mqt-zeromq         ZeroMQ
 mqt-erl-libs        erl-libs
 
 usr/odb             ODB
