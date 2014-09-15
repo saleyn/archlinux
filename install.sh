@@ -15,8 +15,8 @@ function usage() {
   echo "  -r, --repackage - Repackage without rebuilding"
   echo "  -D              - Download only (no build/install)"
   echo "  -R              - Remove the package(s)"
-  echo "  -C [Name]       - Clear build directory for the given package"
-  echo "  -c [Name]       - Clear the package-*.xz installation file"
+  echo "  -C              - Clear build directory for the given package"
+  echo "  -c              - Clear the package-*.xz installation file"
   echo "  -t ToolChain    - Specify toolchain (gcc | clang | intel)"
   echo "  -U              - Update checksums of the given package(s)"
   echo "  --force         - Bypass the conflict checks"
@@ -93,16 +93,14 @@ while [ -n "$1" ]; do
     -a) PACKAGE=1; ALL_PKGS=1;;
     -b) shift; PACKAGE=1; BEGIN_PKG="$1";;
     -p) shift; PACKAGE=1; IFS=, read -ra p <<< "$1"; PKGS+=("${p[@]}"); unset p;;
-    -C) DELETE_BUILD=1
-        shift
-        [ "${1:0:1}" = '-' ] && continue
-        remove_build $1
-        exit 0;;
-    -c) DELETE_PKG=1
-        shift
-        [ "${1:0:1}" = '-' ] && continue
-        remove_pkg $1 || exit 1
-        exit 0;;
+    -C) DELETE_BUILD=1;;
+        #[ "${1:0:1}" = '-' ] && continue
+        #remove_build $1
+        #exit 0;;
+    -c) DELETE_PKG=1;;
+        #[ "${1:0:1}" = '-' ] && continue
+        #remove_pkg $1 || exit 1
+        #exit 0;;
     -s) shift
         ! which namcap >&/dev/null && echo "namcap package not installed!" && exit 1
         namcap -i pkg/$1.PKGBUILD
