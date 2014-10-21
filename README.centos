@@ -1,3 +1,3 @@
 CENTOS: Packages needed for BOOST:
 
-yum install git binutils libtool patch gcc-c++ python2.7-devel bzip2-devel flex openssl-devel byacc
+yum install git binutils libtool patch gcc-c++ python2.7-devel bzip2-devel flex openssl-devel byacc libevent-devel
