@@ -8,7 +8,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=scribe
 pkgname=${pkgbase}-git
-pkgver=122.4452362
+pkgver=123.b328c70
 pkgrel=1
 pkgdesc='Log data aggregator'
 arch=('x86_64')
@@ -70,6 +70,9 @@ package() {
 
   make DESTDIR="${pkgdir}" install
 
+  install -dvm755 "${pkgdir}"/usr/share/${pkgbase}/example
+  install -Dvm644 examples/*.conf "${pkgdir}"/usr/share/${pkgbase}/example
+  install -Dvm755 examples/{scribe_cat,scribe_ctrl,scribe-make-cert-pair.sh} "${pkgdir}"/usr/local/bin
 #  install -Dm644 LICENSE "${pkgdir}"/usr/share/licenses/${pkgname}/LICENSE
 
 #  cd "${pkgdir}"/opt/pkg/${pkgbase}

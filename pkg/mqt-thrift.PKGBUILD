@@ -22,10 +22,10 @@ optdepends=('python2: to use Python bindings'
             'perl: to use Perl bindings'
             'perl-bit-vector: to use Perl bindings')
 options=(!emptydirs staticlibs buildflags makeflags)
-source=("https://github.com/saleyn/thrift/archive/mqt-${pkgver}.zip"
+source=("thrift::git+https://github.com/saleyn/thrift.git#branch=uds"
         "https://issues.apache.org/jira/secure/attachment/12632477/yylex.patch"
        )
-md5sums=('5ee6b49f8b3e37a71d86dc7541c1aa04'
+md5sums=('SKIP'
          'f2c9d4b464b372fa3e80f856624f49c9')
 
 install=mqt-${pkgbase}.install
@@ -35,7 +35,7 @@ INSTALL_DIR=/opt/pkg
 THRIFT_DIR="${INSTALL_DIR}"/${pkgbase}/${pkgver}
 
 prepare() {
-  cd $srcdir/$pkgbase-mqt-$pkgver
+  cd $srcdir/$pkgbase
   patch -p1 < ../yylex.patch
 }
 
@@ -45,7 +45,7 @@ build() {
 
   rm -f ../${pkgbase}*.log.*
 
-  cd $srcdir/$pkgbase-mqt-$pkgver
+  cd $srcdir/$pkgbase
 
   BOOST_INSTALL_DIR=${ENV_DIR}/Boost/Current
   BOOST_LIB_DIR=${BOOST_INSTALL_DIR}/${TOOLSET}/lib
@@ -82,7 +82,7 @@ build() {
 }
 
 package() {
-  cd $srcdir/$pkgbase-mqt-$pkgver
+  cd $srcdir/$pkgbase
 
   make DESTDIR=$pkgdir install
 
@@ -96,7 +96,7 @@ package() {
   echo InstallDir...: "${pkgdir}"${INSTALL_DIR}
   echo "==============================================="
 
-  cd $srcdir/$pkgbase-mqt-$pkgver/contrib/fb303
+  cd $srcdir/$pkgbase/contrib/fb303
 
   make DESTDIR=$pkgdir install
 
