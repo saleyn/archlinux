@@ -54,7 +54,8 @@ build() {
 
   ./bootstrap.sh
 
-  PYTHON=/usr/bin/python2 ./configure CXXFLAGS=" -g -O${OPTIMIZE}" \
+  PYTHON=/usr/bin/python2 \
+  ./configure CXXFLAGS=" -g -O${OPTIMIZE}" \
             LDFLAGS="-L${BOOST_LIB_DIR} -Wl,-rpath,${BOOST_LIB_DIR}" \
             --with-boost=${BOOST_INSTALL_DIR} --prefix=${THRIFT_DIR} \
             --exec-prefix=${THRIFT_DIR}/${TOOLSET} --without-qt4 \
@@ -73,7 +74,8 @@ build() {
   aclocal -I ./aclocal
   automake -a
   autoconf
-  PYTHON=/usr/bin/python2 ./configure CXXFLAGS="-g -O${OPTIMIZE:-3}" --with-boost=${BOOST_INSTALL_DIR} \
+  PYTHON=/usr/bin/python2 \
+  ./configure CXXFLAGS="-g -O${OPTIMIZE:-3}" --with-boost=${BOOST_INSTALL_DIR} \
       --with-thriftpath="../../../compiler/cpp" --prefix=${THRIFT_DIR} \
       --exec-prefix=${THRIFT_DIR}/${TOOLSET}
   make -j$THREADS

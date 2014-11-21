@@ -8,7 +8,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=scribe
 pkgname=${pkgbase}-git
-pkgver=123.b328c70
+pkgver=124.91fc5a3
 pkgrel=1
 pkgdesc='Log data aggregator'
 arch=('x86_64')
@@ -46,6 +46,7 @@ build() {
   BOOST_DIR=${ENVDIR}/Boost/Current
   THRIFT_DIR=${ENVDIR}/Thrift/Current
 
+  PYTHON=/usr/bin/python2 \
   ./configure \
     CXXFLAGS="-g -O3" \
     LDFLAGS="-Wl,-rpath,${BOOST_DIR}/${TOOLSET}/lib -Wl,-rpath,${THRIFT_DIR}/${TOOLSET}/lib" \
