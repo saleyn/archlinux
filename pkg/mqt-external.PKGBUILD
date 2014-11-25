@@ -22,8 +22,6 @@ makedepends=(
   libodb
   libcutl
   libodb-mysql
-  mqt-astsbridge  
-  mqt-cgate       
   mqt-boost
   mqt-thrift
   mqt-folly
