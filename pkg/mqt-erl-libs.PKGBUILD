@@ -18,6 +18,12 @@ license=(Apache)
 GTEST=gtest-1.6.0
 makedepends=(git rebar saxon-he)
 source=(
+  git+https://github.com/erlang/pmod_transform
+  git+https://github.com/saleyn/erlsom.git
+  git+https://github.com/saleyn/erlcfg.git
+  git+https://github.com/saleyn/proto.git
+  emmap::git+https://github.com/saleyn/emmap.git#branch=auto_unlink
+  git+https://github.com/maxlapshin/stockdb.git
   git+https://github.com/erlware/rebar_vsn_plugin.git
   git+https://github.com/erlware/erlcron.git
   git+https://github.com/saleyn/erlfix.git
@@ -68,6 +74,16 @@ prepare() {
   mkdir -p erlcron/deps
   cd $srcdir/erlcron/deps
   ln -s ../../rebar_vsn_plugin
+
+  cd $srcdir
+  mkdir -p emmap/deps
+  cd $srcdir/emmap/deps
+  ln -s ../../edown
+
+  cd $srcdir
+  mkdir -p erlcfg/deps
+  cd $srcdir/erlcfg/deps
+  ln -s ../../pmod_transform
 }
 
 build() {
@@ -81,7 +97,9 @@ build() {
     case $d in
       proper)           cd ${srcdir}/$d && make fast;;
       rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
+      stockdb)          cd ${srcdir}/$d && make app;;
       erlcron)          cd ${srcdir}/$d && make compile;;
+      emmap)            cd ${srcdir}/$d && rebar compile;;
       *)                cd ${srcdir}/$d
                         echo "Making $d ($PWD})"
                         make $JOBS;;
@@ -90,7 +108,13 @@ build() {
 }
 
 inst_dir() {
-  echo "${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$1-$(git describe --always --tags --abbrev=0 | sed 's/^v//')"
+  local base="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$1-"
+  local v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
+  if [ -n "$v" ]; then
+    printf "${base}%s" $v
+  else
+    printf "${base}%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  fi
 }
 
 package() {
