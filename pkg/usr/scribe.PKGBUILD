@@ -8,7 +8,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=scribe
 pkgname=${pkgbase}-git
-pkgver=124.91fc5a3
+pkgver=125.ecee8cb
 pkgrel=1
 pkgdesc='Log data aggregator'
 arch=('x86_64')
