@@ -22,8 +22,8 @@ source=(
   git+https://github.com/saleyn/erlsom.git
   git+https://github.com/saleyn/erlcfg.git
   git+https://github.com/saleyn/proto.git
-  emmap::git+https://github.com/saleyn/emmap.git#branch=auto_unlink
-  git+https://github.com/maxlapshin/stockdb.git
+  emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
+  git+https://github.com/saleyn/secdb.git
   git+https://github.com/erlware/rebar_vsn_plugin.git
   git+https://github.com/erlware/erlcron.git
   git+https://github.com/saleyn/erlfix.git
@@ -31,6 +31,9 @@ source=(
   git+https://github.com/esl/parse_trans.git
   git+https://github.com/extend/sheriff.git
   emysql::git+https://github.com/Eonblast/Emysql.git
+  cowlib::git+https://github.com/ninenines/cowlib.git#branch=master
+  git+https://github.com/ninenines/ranch.git
+  git+https://github.com/ninenines/cowboy.git
   git+https://github.com/saleyn/erlexec
   git+https://github.com/saleyn/util
   git+https://github.com/saleyn/gen_timed_server
@@ -84,6 +87,12 @@ prepare() {
   mkdir -p erlcfg/deps
   cd $srcdir/erlcfg/deps
   ln -s ../../pmod_transform
+
+  cd $srcdir
+  mkdir -p cowboy/deps
+  cd $srcdir/cowboy/deps
+  ln -s ../../cowlib
+  ln -s ../../ranch
 }
 
 build() {
@@ -108,24 +117,31 @@ build() {
 }
 
 inst_dir() {
-  local base="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$1-"
-  local v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
-  if [ -n "$v" ]; then
-    printf "${base}%s" $v
+  local base="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$1"
+  echo "${PWD}" 1>&2
+  local ver=$(sed -n 's/.*{vsn,[[:space:]]*"[^0-9\.]*\([^"-+]\+\)\([-+][^"]\+\)\{0,1\}"}.*$/\1/p' ebin/$1.app 2>/dev/null || true)
+  if [ -n "$ver" ]; then
+    printf "${base}-${ver}"
   else
-    printf "${base}%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+    ver=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^[^0-9\.]*//')
+    if [ -n "$ver" ]; then
+      printf "${base}-${ver}"
+    else
+      printf "${base}-0.1.%s" $(git rev-list --count HEAD) #$(git rev-parse --short HEAD)
+    fi
   fi
 }
 
 package() {
 
-  echo "==== Packaging emysql ==="
+  echo "==== Packaging ${pkgbase} ==="
   BASE="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}"
 
-  for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -printf "%f\n")
+  for d in $(ls -dtr "${srcdir}/*/")
   do
-    cd "${srcdir}"/$d
-    DIR=$(inst_dir $d)
+    d=${d%/}
+    cd $d
+    DIR=$(inst_dir ${d##*/})
     mkdir -p $DIR
     INC=""
     [ -d "bin"     ] && INC+=" $(find bin     -type f -maxdepth 1)"

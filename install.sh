@@ -131,7 +131,7 @@ while [ -n "$1" ]; do
         esac;;
     -U) UPD_CHECKSUMS=1;;
     -e|--noextract) PACMAN_OPTS+=" -e";;
-    -r|--repackage) PACMAN_OPTS+=" -r";;
+    -r|--repackage) PACMAN_OPTS+=" -R";;
     --confirm)      CONFIRM="";;
     --force)        PACMAN_OPTS+=" --force";;
     --debug)        DEBUG=1;;
@@ -263,6 +263,7 @@ sed -n "$FILTER" Manifest | \
     elif (( DOWNLOAD_ONLY )); then
       makepkg -L -s -o
     else
+      echo "makepkg -L -s ${CONFIRM} ${PACMAN_OPTS}"
       makepkg -L -s ${CONFIRM} ${PACMAN_OPTS}
       PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
       [ -z "$PKG" ] && exit 1
@@ -270,6 +271,7 @@ sed -n "$FILTER" Manifest | \
 
     if (( INSTALL )); then
       echo -en "\e[0;32;40m===> Installing $PKG\n\e[0m"
+      echo "makepkg -i -L ${CONFIRM} ${PACMAN_OPTS}"
       makepkg -i -L ${CONFIRM} ${PACMAN_OPTS}
     fi
 
