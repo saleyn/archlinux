@@ -137,12 +137,15 @@ package() {
   echo "==== Packaging ${pkgbase} ==="
   BASE="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}"
 
-  for d in $(ls -dtr "${srcdir}/*/")
+  cd "${srcdir}"
+
+  for d in $(ls -dtr */)
   do
     d=${d%/}
-    cd $d
-    DIR=$(inst_dir ${d##*/})
-    mkdir -p $DIR
+    cd "${srcdir}/${d}"
+    d=${d##*/}
+    DIR=$(inst_dir $d)
+    mkdir -vp $DIR
     INC=""
     [ -d "bin"     ] && INC+=" $(find bin     -type f -maxdepth 1)"
     [ -d "ebin"    ] && INC+=" $(find ebin    -type f \( -name '*.app' -o -name '*.beam' \) -maxdepth 1)"
