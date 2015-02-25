@@ -30,7 +30,8 @@ source=(
   git+https://github.com/esl/edown.git
   git+https://github.com/esl/parse_trans.git
   git+https://github.com/extend/sheriff.git
-  emysql::git+https://github.com/Eonblast/Emysql.git
+  mysql::git+https://github.com/mysql-otp/mysql-otp
+  #emysql::git+https://github.com/Eonblast/Emysql.git
   cowlib::git+https://github.com/ninenines/cowlib.git#branch=master
   git+https://github.com/ninenines/ranch.git
   git+https://github.com/ninenines/cowboy.git
