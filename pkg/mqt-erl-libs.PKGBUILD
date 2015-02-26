@@ -55,44 +55,46 @@ prepare() {
   cd $srcdir
   mkdir -p "lager/deps"
   cd $srcdir/lager/deps
-  ln -s ../../goldrush
+  LIB=goldrush; rm -f $LIB; ln -s ../../$LIB
 
   cd $srcdir
   mkdir -p jiffy/deps
   cd $srcdir/jiffy/deps
-  ln -s ../../proper
+  LIB=proper; rm -f $LIB; ln -s ../../$LIB
 
   cd $srcdir
   mkdir -p parse_trans/deps
   cd $srcdir/parse_trans/deps
-  ln -s ../../edown
+  LIB=edown; rm -f $LIB; ln -s ../../$LIB
 
   cd $srcdir
   mkdir -p sheriff/deps
   cd $srcdir/sheriff/deps
-  ln -s ../../parse_trans
-  ln -s ../../edown
+  LIB=parse_trans; rm -f $LIB; ln -s ../../$LIB
+  LIB=edown; rm -f $LIB; ln -s ../../$LIB
 
   cd $srcdir
   mkdir -p erlcron/deps
   cd $srcdir/erlcron/deps
-  ln -s ../../rebar_vsn_plugin
+  LIB=rebar_vsn_plugin; rm -f $LIB; ln -s ../../$LIB
 
   cd $srcdir
   mkdir -p emmap/deps
   cd $srcdir/emmap/deps
-  ln -s ../../edown
+  LIB=edown; rm -f $LIB; ln -s ../../$LIB
 
   cd $srcdir
   mkdir -p erlcfg/deps
   cd $srcdir/erlcfg/deps
-  ln -s ../../pmod_transform
+  LIB=pmod_transform; rm -f $LIB; ln -s ../../$LIB
 
   cd $srcdir
   mkdir -p cowboy/deps
   cd $srcdir/cowboy/deps
-  ln -s ../../cowlib
-  ln -s ../../ranch
+  LIB=cowlib; rm -f $LIB; ln -s ../../$LIB
+  LIB=ranch;  rm -f $LIB; ln -s ../../$LIB
+
+  unset LIB
 }
 
 build() {
