@@ -40,60 +40,69 @@ source=(
   git+https://github.com/saleyn/gen_timed_server
   git+https://github.com/uwiger/gproc.git
   git+https://github.com/basho/lager.git
-  git+https://github.com/DeadZen/goldrush.git
+  git+https://github.com/DeadZen/goldrush.git#tag=0.1.6
   git+https://github.com/mochi/mochiweb.git
   git+https://github.com/davisp/jiffy.git
   git+https://github.com/manopapad/proper.git
   git+https://github.com/saleyn/getopt.git#branch=format_error
+  thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
+  escribe::git+https://github.com/saleyn/erl_scribe.git
 )
+
+noextract=(thrift.zip)
 
 md5sums=( $(for i in `seq 1 ${#source[@]}`; do echo 'SKIP'; done) )
 
 install=mqt-${pkgbase}.install
 
 prepare() {
+  cd $srcdir
+  rm -fr erl ethrift
+  bsdtar -xf thrift.zip --strip-components=2 thrift-uds/lib/erl
+  mv erl ethrift
+
   rm util/src/decompiler.erl
   cd $srcdir
   mkdir -p "lager/deps"
   cd $srcdir/lager/deps
-  ln -s ../../goldrush
+  ln -fs ../../goldrush
 
   cd $srcdir
   mkdir -p jiffy/deps
   cd $srcdir/jiffy/deps
-  ln -s ../../proper
+  ln -fs ../../proper
 
   cd $srcdir
   mkdir -p parse_trans/deps
   cd $srcdir/parse_trans/deps
-  ln -s ../../edown
+  ln -fs ../../edown
 
   cd $srcdir
   mkdir -p sheriff/deps
   cd $srcdir/sheriff/deps
-  ln -s ../../parse_trans
-  ln -s ../../edown
+  ln -fs ../../parse_trans
+  ln -fs ../../edown
 
   cd $srcdir
   mkdir -p erlcron/deps
   cd $srcdir/erlcron/deps
-  ln -s ../../rebar_vsn_plugin
+  ln -fs ../../rebar_vsn_plugin
 
   cd $srcdir
   mkdir -p emmap/deps
   cd $srcdir/emmap/deps
-  ln -s ../../edown
+  ln -fs ../../edown
 
   cd $srcdir
   mkdir -p erlcfg/deps
   cd $srcdir/erlcfg/deps
-  ln -s ../../pmod_transform
+  ln -fs ../../pmod_transform
 
   cd $srcdir
   mkdir -p cowboy/deps
   cd $srcdir/cowboy/deps
-  ln -s ../../cowlib
-  ln -s ../../ranch
+  ln -fs ../../cowlib
+  ln -fs ../../ranch
 }
 
 build() {
@@ -109,6 +118,7 @@ build() {
       rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
       stockdb)          cd ${srcdir}/$d && make app;;
       erlcron)          cd ${srcdir}/$d && make compile;;
+      ethrift)          cd ${srcdir}/$d && rebar compile;;
       emmap)            cd ${srcdir}/$d && rebar compile;;
       *)                cd ${srcdir}/$d
                         echo "Making $d ($PWD})"
