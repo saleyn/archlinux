@@ -14,7 +14,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=boost
 pkgname=mqt-${pkgbase}
-pkgver=1.56.0
+pkgver=1.58.0
 _boostver=${pkgver//./_}
 pkgrel=4
 url="http://www.boost.org"
@@ -23,15 +23,14 @@ license=('custom')
 options=(buildflags makeflags)
 makedepends=('icu>=53.1' 'python' 'python2' 'bzip2' 'zlib')
 source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz"
-        'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.55.0...message-queue.patch'
-        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/saleyn:master...node-allocator.patch'
+        'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...message-queue-boost-1.58.patch'
+        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...node-allocator-boost-1.58.patch'
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip'
         )
-sha1sums=('1639723c6bdff873cdb6d747f8f8c9d9f066434d'
+sha1sums=('a27b010b9d5de0c07df9dddc9c336767725b1e6b'
           'SKIP'
           'SKIP'
-          'SKIP'
-         )
+          'SKIP')
 
 install=mqt-${pkgbase}.install
 

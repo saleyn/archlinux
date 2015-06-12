@@ -23,21 +23,15 @@ optdepends=('python2: to use Python bindings'
             'perl-bit-vector: to use Perl bindings')
 options=(!emptydirs staticlibs buildflags makeflags)
 source=("thrift::git+https://github.com/saleyn/thrift.git#branch=uds"
-        "https://issues.apache.org/jira/secure/attachment/12632477/yylex.patch"
        )
 md5sums=('SKIP'
-         'f2c9d4b464b372fa3e80f856624f49c9')
+        )
 
 install=mqt-${pkgbase}.install
 
 ENV_DIR=/opt/env/prod
 INSTALL_DIR=/opt/pkg
 THRIFT_DIR="${INSTALL_DIR}"/${pkgbase}/${pkgver}
-
-prepare() {
-  cd $srcdir/$pkgbase
-  patch -p1 < ../yylex.patch
-}
 
 build() {
 
@@ -55,7 +49,7 @@ build() {
   ./bootstrap.sh
 
   PYTHON=/usr/bin/python2 \
-  ./configure CXXFLAGS=" -g -O${OPTIMIZE}" \
+  ./configure CXXFLAGS=" -g -O${OPTIMIZE}" PYTHON=python2 \
             LDFLAGS="-L${BOOST_LIB_DIR} -Wl,-rpath,${BOOST_LIB_DIR}" \
             --with-boost=${BOOST_INSTALL_DIR} --prefix=${THRIFT_DIR} \
             --exec-prefix=${THRIFT_DIR}/${TOOLSET} --without-qt4 \
