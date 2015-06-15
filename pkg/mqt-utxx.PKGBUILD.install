@@ -1,0 +1,10 @@
+DIR="${pkgdir}"/opt/pkg/utxx/current
+
+post_install() {
+    cd "${DIR}"
+    ln -s gcc/bin
+}
+
+post_remove() {
+    rm -f "${DIR}"/bin
+}
