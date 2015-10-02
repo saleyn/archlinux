@@ -43,6 +43,7 @@ source=(
   git+https://github.com/DeadZen/goldrush.git#tag=0.1.6
   git+https://github.com/mochi/mochiweb.git
   git+https://github.com/davisp/jiffy.git
+  git+https://github.com/maxlapshin/io_libc.git
   git+https://github.com/manopapad/proper.git
   git+https://github.com/saleyn/getopt.git#branch=format_error
   thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
@@ -119,6 +120,7 @@ build() {
       stockdb)          cd ${srcdir}/$d && make app;;
       erlcron)          cd ${srcdir}/$d && make compile;;
       ethrift)          cd ${srcdir}/$d && rebar compile;;
+      io_libc)          cd ${srcdir}/$d && rebar compile;;
       emmap)            cd ${srcdir}/$d && rebar compile;;
       *)                cd ${srcdir}/$d
                         echo "Making $d ($PWD})"
