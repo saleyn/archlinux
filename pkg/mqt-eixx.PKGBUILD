@@ -42,6 +42,7 @@ build() {
 
   ./bootstrap
 
+  CXXFLAGS="-Wdeprecated-declarations -Wunused-variable" \
   ./configure \
     --enable-silent-rules \
     --enable-optimize \
