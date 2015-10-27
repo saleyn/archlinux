@@ -13,7 +13,7 @@ usr/jdk
 #======================================
 aur/google-gflags
 aur/msgpack
-aur/libodb
+#aur/libodb
 aur/libcutl
 aur/libodb-mysql
 
@@ -40,7 +40,7 @@ mqt-armadillo
 mqt-libodb-boost    ODB
 mqt-erl-libs        erl-libs
 
-usr/odb             ODB
+#usr/odb             ODB
 usr/scribe          # Needs to be installed after boost and thrift
 usr/stringencoders  StringEncoders
 
