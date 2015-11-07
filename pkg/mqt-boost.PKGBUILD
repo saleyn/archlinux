@@ -73,7 +73,7 @@ build() {
             --prefix="${_stagedir}" || return 1
     fi
 
-    echo "using python : 3.4 : /usr/bin/python3 : /usr/include/python3.4m : /usr/lib ;" \
+    echo "using python : 3.5 : /usr/bin/python3 : /usr/include/python3.5m : /usr/lib ;" \
       >> project-config.jam
 
     _bindir="bin.linuxx86"
