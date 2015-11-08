@@ -7,19 +7,21 @@ post_install() {
     echo "Install dir        : ${INSTALL_DIR}"
 
     mkdir -p "${ENV_DIR}"
-    rm    -f "${ENV_DIR}"/Current
+    rm    -f "${ENV_DIR}"/current
     cd       "${ENV_DIR}"
-    ln -s ${INSTALL_DIR} Current
+    ln -s ${INSTALL_DIR} current
 
     cd "${pkgdir}"/opt/bin
+    echo "Cur dir            : $PWD"
     ln -vs ${INSTALL_DIR}/erlfix-*/bin/fixprint.es
     for f in ${INSTALL_DIR}/eper-*/priv/bin/*; do ln -vs $f; done
 }
 
 post_remove() {
-    echo "Checking ${INSTALL_DIR}"
-    [ ! -d "${INSTALL_DIR}"              ] && rm -f  "${ENV_DIR}"/Current
+    echo "Cleaning ${INSTALL_DIR}"
+    [ ! -d "${INSTALL_DIR}"              ] && rm -vf "${ENV_DIR}"/current
     [ ! -d "${pkgdir}"/opt/pkg/erl-libs  ] && rm -rf "${ENV_DIR}"
-    [ -L "${pkgdir}"/opt/bin/fixprint.es ] && rm -f  "${pkgdir}"/opt/bin/fixprint.es
-    cd "${pkgdir}"/opt/bin && rm -f ntop dtop eper redbug
+    [ -L "${pkgdir}"/opt/bin/fixprint.es ] && rm -vf "${pkgdir}"/opt/bin/fixprint.es
+    echo "Cleaning ${pkgdir}/opt/bin"
+    cd "${pkgdir}"/opt/bin && rm -vf ntop dtop eper redbug
 }
