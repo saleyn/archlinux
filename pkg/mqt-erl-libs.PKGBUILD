@@ -23,11 +23,11 @@ source=(
   git+https://github.com/saleyn/erlcfg.git
   git+https://github.com/saleyn/proto.git
   emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
-  git+https://github.com/saleyn/secdb.git
+  #git+https://github.com/saleyn/secdb.git
   git+https://github.com/erlware/rebar_vsn_plugin.git
   git+https://github.com/erlware/erlcron.git
   git+https://github.com/saleyn/erlfix.git
-  git+https://github.com/esl/edown.git
+  git+https://github.com/uwiger/edown.git
   git+https://github.com/esl/parse_trans.git
   git+https://github.com/extend/sheriff.git
   mysql::git+https://github.com/mysql-otp/mysql-otp
@@ -46,6 +46,7 @@ source=(
   git+https://github.com/maxlapshin/io_libc.git
   git+https://github.com/manopapad/proper.git
   git+https://github.com/saleyn/getopt.git#branch=format_error
+  git+https://github.com/massemanet/eper.git
   thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
   escribe::git+https://github.com/saleyn/erl_scribe.git
 )
@@ -165,7 +166,7 @@ package() {
     [ -d "src"     ] && INC+=" $(find src     -type f -maxdepth 1)"
     [ -d "include" ] && INC+=" $(find include -type f -name '*.hrl' -maxdepth 1)"
     [ -d "test"    ] && INC+=" $(find test    -type f -name '*.erl' -maxdepth 1)"
-    [ -d "priv"    ] && INC+=" $(find priv    -type f -maxdepth 1)"
+    [ -d "priv"    ] && INC+=" $(find priv    -type f -maxdepth 2)"
     for i in $INC; do
       install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/$i;
     done
@@ -183,6 +184,12 @@ package() {
   DIR=$(inst_dir mochiweb)
   for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
 
+  cd "${srcdir}"/eper
+  DIR=$(inst_dir eper)
+  install -m 755 -d "$DIR/bin"
+  install -m 755 -d "${pkgdir}/opt/bin"
+  for f in priv/bin/*; do cd $DIR/bin && ln -vs ../$f; done
+  
   cd "${pkgdir}"/opt/pkg/${pkgbase}
   ln -vs ${pkgver} current
 }
