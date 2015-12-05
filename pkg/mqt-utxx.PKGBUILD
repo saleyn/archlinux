@@ -42,20 +42,14 @@ build() {
 
   cd "$srcdir"/${pkgbase}
 
-  ./bootstrap
+  [ -n "$DEBUG" ] && VERBOSE="VERBOSE=1"
 
-  [ -z "$DEBUG" ] && SILENT="--enable-silent-rules"
+  make bootstrap toolchain=gcc build=Release generator=make ${VERBOSE} \
+    PKG_ROOT_DIR=/opt/pkg \
+    BOOST_ROOT=/opt/pkg/boost/current \
+    WITH_THRIFT=ON
 
-  ./configure \
-    ${SILENT} \
-    --enable-optimize \
-    --prefix=/opt/pkg/${pkgbase}/${pkgver} \
-    --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \
-    --with-boost=/opt/env/prod/Boost/Current \
-    --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib \
-    --with-thrift=/opt/env/prod/Thrift/Current \
-    --with-thrift-libdir=/opt/env/prod/Thrift/Current/${TOOLSET}/lib
-  make $JOBS
+  make 
 }
 
 package() {

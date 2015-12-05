@@ -122,11 +122,10 @@ package() {
     INSTALL_DIR="${DST_DIR}"/${pkgver}
 
     install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/include
-    install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/${TOOLSET}
-    install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/${TOOLSET}/{bin,lib}
+    install -dm755 "${pkgdir}"/"${INSTALL_DIR}"/{bin,lib}
     cp -a "${_stagedir}"/include "${pkgdir}"/"${INSTALL_DIR}"
     for d in bin lib; do
-        cp -a "${_stagedir}/$d" "${pkgdir}/${INSTALL_DIR}/${TOOLSET}"
+        cp -a "${_stagedir}/$d" "${pkgdir}/${INSTALL_DIR}"
     done
 
     #find "${_stagedir}"/lib -name \*.a -exec mv {} "${pkgdir}"/${DIR}/${TOOLSET}/lib \;
