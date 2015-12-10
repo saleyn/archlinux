@@ -21,6 +21,7 @@ source=(
   git+https://github.com/erlang/pmod_transform
   git+https://github.com/saleyn/erlsom.git
   git+https://github.com/saleyn/erlcfg.git
+  bcrypt::git+https://github.com/saleyn/erlang-bcrypt.git
   git+https://github.com/saleyn/proto.git
   emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
   #git+https://github.com/saleyn/secdb.git
@@ -161,14 +162,18 @@ package() {
     DIR=$(inst_dir $d)
     mkdir -vp $DIR
     INC=""
-    [ -d "bin"     ] && INC+=" $(find bin     -type f -maxdepth 1)"
-    [ -d "ebin"    ] && INC+=" $(find ebin    -type f \( -name '*.app' -o -name '*.beam' \) -maxdepth 1)"
-    [ -d "src"     ] && INC+=" $(find src     -type f -maxdepth 1)"
-    [ -d "include" ] && INC+=" $(find include -type f -name '*.hrl' -maxdepth 1)"
-    [ -d "test"    ] && INC+=" $(find test    -type f -name '*.erl' -maxdepth 1)"
-    [ -d "priv"    ] && INC+=" $(find priv    -type f -maxdepth 2)"
+    [ -d "bin"     ] && INC+=" $(find bin     -maxdepth 1 -type f)"
+    [ -d "ebin"    ] && INC+=" $(find ebin    -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
+    [ -d "_build"  ] && INC+=" $(find $(find _build -type f \( -name ${d}.app \) -printf '%h') \
+                                      -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
+    [ -d "src"     ] && INC+=" $(find src     -maxdepth 1 -type f)"
+    [ -d "include" ] && INC+=" $(find include -maxdepth 1 -type f -name '*.hrl')"
+    [ -d "test"    ] && INC+=" $(find test    -maxdepth 1 -type f -name '*.erl')"
+    [ -d "priv"    ] && INC+=" $(find priv    -maxdepth 2 -type f)"
     for i in $INC; do
-      install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/$i;
+      j=$i
+      [[ $i == _build/* ]] && j="ebin/${i##*/}"
+      install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/${j};
     done
     #if [ -d "deps" ]; then
     #  cd deps
