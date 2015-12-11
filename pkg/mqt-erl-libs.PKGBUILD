@@ -164,15 +164,20 @@ package() {
     INC=""
     [ -d "bin"     ] && INC+=" $(find bin     -maxdepth 1 -type f)"
     [ -d "ebin"    ] && INC+=" $(find ebin    -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
-    [ -d "_build"  ] && INC+=" $(find $(find _build -type f \( -name ${d}.app \) -printf '%h') \
-                                      -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
     [ -d "src"     ] && INC+=" $(find src     -maxdepth 1 -type f)"
     [ -d "include" ] && INC+=" $(find include -maxdepth 1 -type f -name '*.hrl')"
     [ -d "test"    ] && INC+=" $(find test    -maxdepth 1 -type f -name '*.erl')"
     [ -d "priv"    ] && INC+=" $(find priv    -maxdepth 2 -type f)"
+    if [ -d "_build"  ]; then
+        [ -z "$(which rebar3 2>/dev/null)" ] && echo "rebar3 not found" && exit 1
+        path=$(rebar3 path)
+        files=$(find _build${path##*/_build} -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))
+        INC+=" ${files}"
+    fi
     for i in $INC; do
       j=$i
-      [[ $i == _build/* ]] && j="ebin/${i##*/}"
+      # Strip "_build/.../ebin/*.{app,beam}" to "ebin/*{app,beam}"
+      [[ $i == _build/* ]] && [[ "$i" =~ ([^/]+/+[^/]+)/*$ ]] && j=${BASH_REMATCH[1]}
       install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/${j};
     done
     #if [ -d "deps" ]; then
