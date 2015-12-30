@@ -38,6 +38,7 @@ mqt-utxx            utxx
 mqt-eixx            eixx
 mqt-armadillo
 mqt-libodb-boost    ODB
+mqt-erl-sw          erl-sw
 mqt-erl-libs        erl-libs
 
 #usr/odb             ODB
