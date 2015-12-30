@@ -5,7 +5,7 @@
 # /usr installed packages (GCC compilation only)
 #===============================================
 usr/double-conversion
-usr/cfengine
+#usr/cfengine
 usr/jdk
 
 #======================================
@@ -13,9 +13,7 @@ usr/jdk
 #======================================
 aur/google-gflags
 aur/msgpack
-#aur/libodb
 aur/libcutl
-aur/libodb-mysql
 
 #============================
 # /opt/pkg installed packages
@@ -37,11 +35,9 @@ mqt-folly
 mqt-utxx            utxx
 mqt-eixx            eixx
 mqt-armadillo
-mqt-libodb-boost    ODB
 mqt-erl-sw          erl-sw
 mqt-erl-libs        erl-libs
 
-#usr/odb             ODB
 usr/scribe          # Needs to be installed after boost and thrift
 usr/stringencoders  StringEncoders
 
