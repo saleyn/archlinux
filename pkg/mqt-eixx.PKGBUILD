@@ -8,7 +8,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=eixx
 pkgname=mqt-${pkgbase}
-pkgver=1.1.107
+pkgver=1.4
 pkgrel=1
 pkgdesc='Erlang C++ interface library'
 arch=('x86_64')
@@ -25,9 +25,10 @@ install=mqt-${pkgbase}.install
 
 pkgver() {
   cd ${pkgbase}
-  printf "%s.%s" \
-    "$(git describe --tags --abbrev=0 | sed 's/[^0-9]*//')" \
-    "$(git rev-list --count HEAD)"
+  make ver
+  #printf "%s.%s" \
+  #       "$(git describe --tags --abbrev=0 | sed 's/[^0-9]*//')" \
+  #       "$(git rev-list --count HEAD)"
 }
 
 build() {
@@ -40,17 +41,12 @@ build() {
 
   cd "$srcdir"/${pkgbase}
 
-  ./bootstrap
+  make bootstrap toolchain=gcc build=release generator=ninja ${VERBOSE} \
+    prefix=/opt/pkg/${pkgbase}/${pkgver} \
+    PKG_ROOT_DIR=/opt/pkg \
+    BOOST_ROOT=/opt/pkg/boost/current
 
-  CXXFLAGS="-Wdeprecated-declarations -Wunused-variable" \
-  ./configure \
-    --enable-silent-rules \
-    --enable-optimize \
-    --prefix=/opt/pkg/${pkgbase}/${pkgver} \
-    --exec-prefix=/opt/pkg/${pkgbase}/${pkgver}/${TOOLSET} \
-    --with-boost=/opt/env/prod/Boost/Current \
-    --with-boost-libdir=/opt/env/prod/Boost/Current/${TOOLSET}/lib
-  make $JOBS
+  make 
 }
 
 package() {

@@ -8,7 +8,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=utxx
 pkgname=mqt-${pkgbase}
-pkgver=1.1
+pkgver=1.4
 pkgrel=1
 pkgdesc='utxx is a collection of C++ utility components'
 arch=('x86_64')
@@ -24,12 +24,13 @@ install=mqt-${pkgbase}.install
 
 pkgver() {
   cd ${pkgbase}
-  v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
-  if [ -n "$v" ]; then
-    printf "%s" $v
-  else
-    printf "%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-  fi
+  make ver
+  #v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
+  #if [ -n "$v" ]; then
+  #  printf "%s" $v
+  #else
+  #  printf "%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  #fi
 }
 
 build() {
@@ -44,10 +45,11 @@ build() {
 
   [ -n "$DEBUG" ] && VERBOSE="VERBOSE=1"
 
-  make bootstrap toolchain=gcc build=Release generator=make ${VERBOSE} \
+  make bootstrap toolchain=gcc build=Release generator=ninja ${VERBOSE} \
+    prefix=/opt/pkg \
     PKG_ROOT_DIR=/opt/pkg \
     BOOST_ROOT=/opt/pkg/boost/current \
-    WITH_THRIFT=ON
+    WITH_THRIFT=OFF
 
   make 
 }

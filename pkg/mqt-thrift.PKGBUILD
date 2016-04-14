@@ -41,16 +41,16 @@ build() {
 
   cd $srcdir/$pkgbase
 
-  BOOST_INSTALL_DIR=${ENV_DIR}/Boost/Current
-  BOOST_LIB_DIR=${BOOST_INSTALL_DIR}/${TOOLSET}/lib
+  BOOST_INSTALL_DIR=/opt/pkg/boost/current
+  BOOST_LIB_DIR=${BOOST_INSTALL_DIR}/lib
   OPTIMIZE=${OPTIMIZE:-3}
   THREADS=$(nproc)
 
   ./bootstrap.sh
 
-  PYTHON=/usr/bin/python2 \
-  ./configure CXXFLAGS=" -g -O${OPTIMIZE}" PYTHON=python2 \
-            LDFLAGS="-L${BOOST_LIB_DIR} -Wl,-rpath,${BOOST_LIB_DIR}" \
+  ./configure CXXFLAGS=" -g -O${OPTIMIZE} -Wno-deprecated-declarations" \
+              PYTHON=/usr/bin/python2 \
+              LDFLAGS="-L${BOOST_LIB_DIR} -Wl,-rpath,${BOOST_LIB_DIR}" \
             --with-boost=${BOOST_INSTALL_DIR} --prefix=${THRIFT_DIR} \
             --exec-prefix=${THRIFT_DIR}/${TOOLSET} --without-qt4 \
             --without-php --without-c_glib --without-haskell --without-go \

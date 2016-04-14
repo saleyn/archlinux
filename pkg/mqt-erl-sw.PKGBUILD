@@ -19,7 +19,7 @@ GTEST=gtest-1.6.0
 makedepends=(git rebar)
 source=(
   git+https://github.com/rebar/rebar.git
-  git+https://github.com/rebar/rebar3.git
+  git+https://github.com/saleyn/rebar3.git#branch=relx-vars
   git+https://github.com/archaelus/edump.git
 )
 
@@ -40,7 +40,7 @@ build() {
     echo "Making $d (${srcdir}/$d)"
     case $d in
       rebar)            cd ${srcdir}/$d && ./bootstrap;;
-      rebar3)           cd ${srcdir}/$d && ./bootstrap;;
+      rebar3)           cd ${srcdir}/$d && ./bootstrap && ./rebar3 upgrade relx && ./bootstrap;;
       edump)            cd ${srcdir}/$d && ../rebar3/rebar3 escriptize;;
       *)                cd ${srcdir}/$d
                         make $JOBS;;
