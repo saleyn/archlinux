@@ -188,6 +188,8 @@ if (( LISTONLY )); then
   printf "%-30s %-15s %-25s %s\n" ============ ========== =========== ================
 fi
 
+umask 022
+
 sed -n "$FILTER" Manifest | \
   while read -r -a array; do
     dirname=""
