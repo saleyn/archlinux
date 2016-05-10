@@ -34,6 +34,7 @@ mqt-thrift
 mqt-folly
 mqt-utxx            utxx
 mqt-eixx            eixx
+mqt-sdb             sdb
 mqt-armadillo
 mqt-erl-sw          erl-sw
 mqt-erl-libs        erl-libs
