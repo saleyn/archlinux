@@ -45,10 +45,14 @@ build() {
 
   [ -n "$DEBUG" ] && VERBOSE="VERBOSE=1"
 
-  make bootstrap toolchain=gcc build=Release generator=ninja ${VERBOSE} \
+  make bootstrap toolchain=gcc build=Debug generator=ninja ${VERBOSE} \
     prefix=/opt/pkg/${pkgbase}/${pkgver} \
     PKG_ROOT_DIR=/opt/pkg \
     BOOST_ROOT=/opt/pkg/boost/current
+
+  make src/lib${pkgbase}_d.so
+
+  make rebootstrap build=Release ${VERBOSE}
 
   make 
 }
