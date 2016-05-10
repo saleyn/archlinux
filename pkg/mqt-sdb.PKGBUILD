@@ -45,6 +45,8 @@ build() {
 
   [ -n "$DEBUG" ] && VERBOSE="VERBOSE=1"
 
+  umask 022
+
   make bootstrap toolchain=gcc build=Debug generator=ninja ${VERBOSE} \
     prefix=/opt/pkg/${pkgbase}/${pkgver} \
     PKG_ROOT_DIR=/opt/pkg \
@@ -61,6 +63,8 @@ package() {
   cd "${srcdir}"/${pkgbase}
 
   echo "==== Packaging ${pkgname} ==="
+
+  umask 022
 
   make DESTDIR="${pkgdir}" install
 
