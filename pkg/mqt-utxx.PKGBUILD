@@ -14,8 +14,8 @@ pkgdesc='utxx is a collection of C++ utility components'
 arch=('x86_64')
 url='https://github.com/saleyn/utxx'
 license=('LGPL')
-depends=(mqt-boost mqt-thrift)
-makedepends=(git mqt-boost mqt-thrift python2)
+depends=(mqt-boost ninja cmake doxygen python2-lxml)
+makedepends=(git mqt-boost python2)
 options=(buildflags makeflags)
 source=(git+https://github.com/saleyn/utxx.git)
 md5sums=('SKIP')
@@ -46,7 +46,7 @@ build() {
   [ -n "$DEBUG" ] && VERBOSE="VERBOSE=1"
 
   make bootstrap toolchain=gcc build=Release generator=ninja ${VERBOSE} \
-    prefix=/opt/pkg \
+    prefix=/opt/pkg/${pkgbase}/${pkgver} \
     PKG_ROOT_DIR=/opt/pkg \
     BOOST_ROOT=/opt/pkg/boost/current \
     WITH_THRIFT=OFF
@@ -58,9 +58,11 @@ package() {
   cd "${srcdir}"/${pkgbase}
 
   echo "==== Packaging ${pkgname} ==="
+  echo "Pkgdir: ${pkgdir}"
 
   make DESTDIR="${pkgdir}" install
 
   cd "${pkgdir}"/opt/pkg/${pkgbase}
+  echo "Dir: ${PWD}"
   ln -vs ${pkgver} current
 }
