@@ -13,13 +13,14 @@ pkgname=mqt-${pkgbase}
 pkgver=1.1
 pkgrel=1
 pkgdesc='Collection of open-source Erlang libraries'
-arch=x86_64
+arch=(x86_64)
 license=(Apache)
 GTEST=gtest-1.6.0
-makedepends=(git rebar)
+makedepends=(git)
 source=(
   git+https://github.com/rebar/rebar.git
-  git+https://github.com/saleyn/rebar3.git#branch=relx-vars
+#git+https://github.com/saleyn/rebar3.git#branch=relx-vars
+  git+https://github.com/rebar/rebar3.git
   git+https://github.com/archaelus/edump.git
 )
 
@@ -40,7 +41,11 @@ build() {
     echo "Making $d (${srcdir}/$d)"
     case $d in
       rebar)            cd ${srcdir}/$d && ./bootstrap;;
-      rebar3)           cd ${srcdir}/$d && ./bootstrap && ./rebar3 upgrade relx && ./bootstrap;;
+      #rebar3)           cd ${srcdir}/$d && ./bootstrap && ./rebar3 upgrade relx && ./bootstrap;;
+      rebar3)           cd ${srcdir}/$d && ./bootstrap \
+                                        &&  wget -qO ./_build/default/lib/relx/priv/templates/extended_bin \
+                                                     https://raw.githubusercontent.com/saleyn/relx/vars/priv/templates/extended_bin \
+                                        && ./bootstrap;;
       edump)            cd ${srcdir}/$d && ../rebar3/rebar3 escriptize;;
       *)                cd ${srcdir}/$d
                         make $JOBS;;
