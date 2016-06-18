@@ -45,10 +45,12 @@ build() {
 
   [ -n "$DEBUG" ] && VERBOSE="VERBOSE=1"
 
- make bootstrap toolchain=gcc build=Debug generator=ninja ${VERBOSE} \
-    prefix=/opt/pkg/${pkgbase}/${pkgver} \
+  echo "DIR:BUILD=${srcdir}/${pkgbase}/build"      >  .cmake-args
+  echo "DIR:INSTALL=/opt/pkg/${pkgbase}/${pkgver}" >> .cmake-args
+  echo "BOOST_ROOT=/opt/pkg/boost/current"         >> .cmake-args
+
+  make bootstrap toolchain=gcc build=Debug generator=ninja ${VERBOSE} \
     PKG_ROOT_DIR=/opt/pkg \
-    BOOST_ROOT=/opt/pkg/boost/current \
     WITH_THRIFT=OFF
 
   make src/lib${pkgbase}_d.so src/lib${pkgbase}_d.a
