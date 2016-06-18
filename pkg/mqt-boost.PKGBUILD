@@ -14,7 +14,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=boost
 pkgname=mqt-${pkgbase}
-pkgver=1.60.0
+pkgver=1.61.0
 _boostver=${pkgver//./_}
 pkgrel=4
 url="http://www.boost.org"
@@ -27,7 +27,7 @@ source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar
         'node-allocator.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...node-allocator-boost-1.58.patch'
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip'
         )
-sha1sums=('ac74db1324e6507a309c5b139aea41af624c8110'
+sha1sums=('2d2b80771f584f327827193fcf3abf836edcdfaa'
           'SKIP'
           'SKIP'
           'SKIP')
