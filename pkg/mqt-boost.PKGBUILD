@@ -14,7 +14,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=boost
 pkgname=mqt-${pkgbase}
-pkgver=1.61.0
+pkgver=1.65.0
 _boostver=${pkgver//./_}
 pkgrel=4
 url="http://www.boost.org"
@@ -27,10 +27,10 @@ source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar
         'node-allocator.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...node-allocator-boost-1.58.patch'
         'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip'
         )
-sha1sums=('2d2b80771f584f327827193fcf3abf836edcdfaa'
-          'SKIP'
-          'SKIP'
-          'SKIP')
+sha1sums=('199ae2fa942779f3d34162e5dba960b6523a935c'
+          '532c0a0902c15f50cf54429ec31220c0086e5bf9'
+          '625e4045bf4b906f6ab0ef586f5e90a4014557b7'
+          'f8bb8bb18fdd64b861a151611df1f714f43a5e0f')
 
 install=mqt-${pkgbase}.install
 
@@ -73,7 +73,7 @@ build() {
             --prefix="${_stagedir}" || return 1
     fi
 
-    echo "using python : 3.5 : /usr/bin/python3 : /usr/include/python3.5m : /usr/lib ;" \
+    echo "using python : 3.6 : /usr/bin/python3 : /usr/include/python3.6m : /usr/lib ;" \
       >> project-config.jam
 
     _bindir="bin.linuxx86"
