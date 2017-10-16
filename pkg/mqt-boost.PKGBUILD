@@ -22,13 +22,8 @@ arch=('x86_64')
 license=('custom')
 options=(buildflags makeflags)
 makedepends=('icu>=53.1' 'python' 'python2' 'bzip2' 'zlib')
-source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz"
-        'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...message-queue-boost-1.58.patch'
-        'node-allocator.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...node-allocator-boost-1.58.patch'
-        )
-sha1sums=('c066ac5c2f42fa2b870362c3c931ef73ffc6f24f'
-          '532c0a0902c15f50cf54429ec31220c0086e5bf9'
-          '625e4045bf4b906f6ab0ef586f5e90a4014557b7')
+source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz")
+sha1sums=('SKIP')
 
 install=mqt-${pkgbase}.install
 
@@ -42,8 +37,8 @@ prepare() {
     export _stagedir="${srcdir}/stagedir"
     cd ${pkgbase}_${_boostver}
 
-    apply_patch 2 ../message-queue.patch
-    apply_patch 2 ../node-allocator.patch
+    #apply_patch 2 ../message-queue.patch
+    #apply_patch 2 ../node-allocator.patch
 }
 
 build() {
@@ -89,7 +84,7 @@ build() {
       ${JOBS} \
       variant=release \
       optimization=speed \
-      debug-symbols=off \
+      debug-symbols=on \
       threading=multi \
       runtime-link=shared \
       link=shared \
