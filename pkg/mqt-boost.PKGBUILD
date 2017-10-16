@@ -14,7 +14,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=boost
 pkgname=mqt-${pkgbase}
-pkgver=1.65.0
+pkgver=1.65.1
 _boostver=${pkgver//./_}
 pkgrel=4
 url="http://www.boost.org"
@@ -25,12 +25,10 @@ makedepends=('icu>=53.1' 'python' 'python2' 'bzip2' 'zlib')
 source=("http://downloads.sourceforge.net/${pkgbase}/${pkgbase}_${_boostver}.tar.gz"
         'message-queue.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...message-queue-boost-1.58.patch'
         'node-allocator.patch::https://github.com/saleyn/interprocess/compare/boostorg:boost-1.58.0...node-allocator-boost-1.58.patch'
-        'boost-process.zip::https://github.com/saleyn/boost-process/archive/master.zip'
         )
-sha1sums=('199ae2fa942779f3d34162e5dba960b6523a935c'
+sha1sums=('c066ac5c2f42fa2b870362c3c931ef73ffc6f24f'
           '532c0a0902c15f50cf54429ec31220c0086e5bf9'
-          '625e4045bf4b906f6ab0ef586f5e90a4014557b7'
-          'f8bb8bb18fdd64b861a151611df1f714f43a5e0f')
+          '625e4045bf4b906f6ab0ef586f5e90a4014557b7')
 
 install=mqt-${pkgbase}.install
 
@@ -46,12 +44,6 @@ prepare() {
 
     apply_patch 2 ../message-queue.patch
     apply_patch 2 ../node-allocator.patch
-
-    # Add boost/process
-    echo "Adding boost/process"
-    rm -fr boost/process libs/process
-    mv -vf ../boost-process-master/boost/* boost/
-    mv -vf ../boost-process-master/libs/*  libs/
 }
 
 build() {
