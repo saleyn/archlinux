@@ -8,7 +8,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=utxx
 pkgname=mqt-${pkgbase}
-pkgver=1.4
+pkgver=1.4.1
 pkgrel=1
 pkgdesc='utxx is a collection of C++ utility components'
 arch=('x86_64')
