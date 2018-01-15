@@ -48,7 +48,6 @@ source=(
   git+https://github.com/manopapad/proper.git
   git+https://github.com/saleyn/getopt.git#branch=format_error
   git+https://github.com/massemanet/eper.git
-  git+https://github.com/saleyn/euds.git
   thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
   escribe::git+https://github.com/saleyn/erl_scribe.git
 )
