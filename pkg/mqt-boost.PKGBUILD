@@ -14,7 +14,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=boost
 pkgname=mqt-${pkgbase}
-pkgver=1.65.1
+pkgver=1.70.0
 _boostver=${pkgver//./_}
 pkgrel=4
 url="http://www.boost.org"

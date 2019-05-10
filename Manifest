@@ -30,7 +30,6 @@ aur/libcutl
 # PkgName           /opt/env/prod/DirName
 # =======           =====================
 mqt-boost
-mqt-boost158
 mqt-thrift
 mqt-folly
 mqt-utxx            utxx
