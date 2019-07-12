@@ -15,44 +15,48 @@ pkgrel=1
 pkgdesc='Collection of open-source Erlang libraries'
 arch=('x86_64')
 license=(Apache)
-GTEST=gtest-1.6.0
-makedepends=(git rebar saxon-he)
+INSTALL_DIR="${pkgdir}/opt/sw/${pkgbase}/${pkgver}"
+#makedepends=(git rebar saxon-he)
+makedepends=(git)
 source=(
-  git+https://github.com/erlang/pmod_transform
-  git+https://github.com/saleyn/erlsom.git
-  git+https://github.com/saleyn/erlcfg.git
-  bcrypt::git+https://github.com/saleyn/erlang-bcrypt.git
-  git+https://github.com/saleyn/proto.git
-  emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
+  git+https://github.com/saleyn/rebar.git#branch=samaster
+  git+https://github.com/saleyn/rebar3.git#branch=relx
+  #emysql::git+https://github.com/Eonblast/Emysql.git
+  #escribe::git+https://github.com/saleyn/erl_scribe.git
+  #git+https://github.com/erlware/rebar_vsn_plugin.git
   #git+https://github.com/saleyn/secdb.git
-  git+https://github.com/erlware/rebar_vsn_plugin.git
+  #thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
+  bcrypt::git+https://github.com/saleyn/erlang-bcrypt.git
+  cowlib::git+https://github.com/ninenines/cowlib.git#branch=master
+  emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
+  git+https://github.com/DeadZen/goldrush.git#tag=0.1.6
+  git+https://github.com/davisp/jiffy.git
+  git+https://github.com/erlang/pmod_transform
   git+https://github.com/erlware/erlcron.git
-  git+https://github.com/saleyn/erlfix.git
-  git+https://github.com/uwiger/edown.git
   git+https://github.com/esl/parse_trans.git
   git+https://github.com/extend/sheriff.git
-  mysql::git+https://github.com/mysql-otp/mysql-otp
-  #emysql::git+https://github.com/Eonblast/Emysql.git
-  cowlib::git+https://github.com/ninenines/cowlib.git#branch=master
-  git+https://github.com/ninenines/ranch.git
-  git+https://github.com/ninenines/cowboy.git
-  git+https://github.com/saleyn/erlexec
-  git+https://github.com/saleyn/util
-  git+https://github.com/saleyn/gen_timed_server
-  git+https://github.com/uwiger/gproc.git
-  git+https://github.com/basho/lager.git
-  git+https://github.com/DeadZen/goldrush.git#tag=0.1.6
-  git+https://github.com/mochi/mochiweb.git
-  git+https://github.com/davisp/jiffy.git
-  git+https://github.com/maxlapshin/io_libc.git
   git+https://github.com/manopapad/proper.git
-  git+https://github.com/saleyn/getopt.git#branch=format_error
   git+https://github.com/massemanet/eper.git
-  thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
-  escribe::git+https://github.com/saleyn/erl_scribe.git
+  git+https://github.com/maxlapshin/io_libc.git
+  git+https://github.com/mochi/mochiweb.git
+  git+https://github.com/ninenines/cowboy.git
+  git+https://github.com/ninenines/ranch.git
+  git+https://github.com/saleyn/erlang-sqlite3.git
+  git+https://github.com/saleyn/erlcfg.git
+  git+https://github.com/saleyn/erlexec.git
+  git+https://github.com/saleyn/erlfix.git
+  git+https://github.com/saleyn/erlsom.git
+  git+https://github.com/saleyn/gen_timed_server.git
+  git+https://github.com/saleyn/getopt.git#branch=format_error
+  git+https://github.com/saleyn/proto.git
+  git+https://github.com/saleyn/util.git
+  git+https://github.com/soranoba/bbmustache.git
+  git+https://github.com/uwiger/edown.git
+  git+https://github.com/uwiger/gproc.git
+  mysql::git+https://github.com/mysql-otp/mysql-otp.git
 )
 
-noextract=(thrift.zip)
+#noextract=(thrift.zip)
 
 md5sums=( $(for i in `seq 1 ${#source[@]}`; do echo 'SKIP'; done) )
 
@@ -60,15 +64,15 @@ install=mqt-${pkgbase}.install
 
 prepare() {
   cd $srcdir
-  rm -fr erl ethrift
-  bsdtar -xf thrift.zip --strip-components=2 thrift-uds/lib/erl
-  mv erl ethrift
+  #rm -fr erl ethrift
+  #bsdtar -xf thrift.zip --strip-components=2 thrift-uds/lib/erl
+  #mv erl ethrift
 
   rm util/src/decompiler.erl
   cd $srcdir
-  mkdir -p "lager/deps"
-  cd $srcdir/lager/deps
-  ln -fs ../../goldrush
+  #mkdir -p "lager/deps"
+  #cd $srcdir/lager/deps
+  #ln -fs ../../goldrush
 
   cd $srcdir
   mkdir -p jiffy/deps
@@ -89,7 +93,7 @@ prepare() {
   cd $srcdir
   mkdir -p erlcron/deps
   cd $srcdir/erlcron/deps
-  ln -fs ../../rebar_vsn_plugin
+  #ln -fs ../../rebar_vsn_plugin
 
   cd $srcdir
   mkdir -p emmap/deps
@@ -117,11 +121,12 @@ build() {
   for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -printf "%f\n")
   do
     case $d in
+      rebar|rebar3)     cd ${srcdir}/$d && ./bootstrap;;
       proper)           cd ${srcdir}/$d && make fast;;
-      rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
+     #rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
       stockdb)          cd ${srcdir}/$d && make app;;
       erlcron)          cd ${srcdir}/$d && make compile;;
-      ethrift)          cd ${srcdir}/$d && rebar compile;;
+     #ethrift)          cd ${srcdir}/$d && rebar compile;;
       io_libc)          cd ${srcdir}/$d && rebar compile;;
       emmap)            cd ${srcdir}/$d && rebar compile;;
       *)                cd ${srcdir}/$d
@@ -132,7 +137,7 @@ build() {
 }
 
 inst_dir() {
-  local base="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}/$1"
+  local base="${INSTALL_DIR}/$1"
   echo "${PWD}" 1>&2
   local ver=$(sed -n 's/.*{vsn,[[:space:]]*"[^0-9\.]*\([^"-+]\+\)\([-+][^"]\+\)\{0,1\}"}.*$/\1/p' ebin/$1.app 2>/dev/null || true)
   if [ -n "$ver" ]; then
@@ -150,12 +155,17 @@ inst_dir() {
 package() {
 
   echo "==== Packaging ${pkgbase} ==="
-  BASE="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}"
+  BASE="${INSTALL_DIR}"
 
   cd "${srcdir}"
 
-  for d in $(ls -dtr */)
-  do
+  # Install rebar
+  [ "$OS" = "Windows_NT" ] && BIN_DIR="${pkgdir}/c/bin" || BIN_DIR="${pkgdir}/opt/bin"
+
+  mkdir -vp "$BIN_DIR"
+  cp -v rebar/rebar rebar3/rebar3 "$BIN_DIR"
+
+  for d in $(ls -dtr */ | grep -E -v "^rebar"); do
     d=${d%/}
     cd "${srcdir}/${d}"
     d=${d##*/}
@@ -174,6 +184,7 @@ package() {
         files=$(find _build${path##*/_build} -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))
         INC+=" ${files}"
     fi
+
     for i in $INC; do
       j=$i
       # Strip "_build/.../ebin/*.{app,beam}" to "ebin/*{app,beam}"
