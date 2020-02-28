@@ -14,7 +14,7 @@ TOOLSET=$(tr '[:upper:]' '[:lower:]' <<< ${TOOLCHAIN:-gcc})
 
 pkgbase=boost
 pkgname=mqt-${pkgbase}
-pkgver=1.70.0
+pkgver=1.72.0
 _boostver=${pkgver//./_}
 pkgrel=4
 url="http://www.boost.org"
@@ -68,7 +68,7 @@ build() {
     [ "${CARCH%*86_64}" = x ] && _bindir="bin.linuxx86_64"
 
     install -dm755 "${_stagedir}"/{bin,include,lib}
-    install tools/build/src/engine/${_bindir}/b2 "${_stagedir}"/bin/b2
+    install tools/build/src/engine/b2 "${_stagedir}"/bin/b2
 
     # default "minimal" install: "release link=shared,static
     # runtime-link=shared threading=single,multi"
