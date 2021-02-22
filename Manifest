@@ -7,6 +7,7 @@
 usr/double-conversion
 #usr/cfengine
 usr/jdk
+usr/pacaur
 
 #======================================
 # Packages obtained from AUR repository
