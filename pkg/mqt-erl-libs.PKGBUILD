@@ -122,7 +122,7 @@ build() {
   do
     case $d in
       rebar|rebar3)     cd ${srcdir}/$d && ./bootstrap;;
-      proper)           cd ${srcdir}/$d && make fast;;
+      proper)           cd ${srcdir}/$d && make compile;;
      #rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
       stockdb)          cd ${srcdir}/$d && make app;;
       erlcron)          cd ${srcdir}/$d && make compile;;
