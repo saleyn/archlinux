@@ -19,8 +19,8 @@ INSTALL_DIR="${pkgdir}/opt/sw/${pkgbase}/${pkgver}"
 #makedepends=(git rebar saxon-he)
 makedepends=(git)
 source=(
-  git+https://github.com/saleyn/rebar.git#branch=samaster
-  git+https://github.com/saleyn/rebar3.git#branch=relx
+  #git+https://github.com/rebar/rebar.git
+  #git+https://github.com/erlang/rebar3.git
   #emysql::git+https://github.com/Eonblast/Emysql.git
   #escribe::git+https://github.com/saleyn/erl_scribe.git
   #git+https://github.com/erlware/rebar_vsn_plugin.git
@@ -28,7 +28,7 @@ source=(
   #thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
   bcrypt::git+https://github.com/saleyn/erlang-bcrypt.git
   cowlib::git+https://github.com/ninenines/cowlib.git#branch=master
-  emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
+  #emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
   git+https://github.com/DeadZen/goldrush.git#tag=0.1.6
   git+https://github.com/davisp/jiffy.git
   git+https://github.com/erlang/pmod_transform
@@ -36,15 +36,14 @@ source=(
   git+https://github.com/esl/parse_trans.git
   git+https://github.com/extend/sheriff.git
   git+https://github.com/manopapad/proper.git
-  git+https://github.com/massemanet/eper.git
-  git+https://github.com/maxlapshin/io_libc.git
-  git+https://github.com/mochi/mochiweb.git
+  #git+https://github.com/maxlapshin/io_libc.git
+  #git+https://github.com/mochi/mochiweb.git
   git+https://github.com/ninenines/cowboy.git
   git+https://github.com/ninenines/ranch.git
   git+https://github.com/saleyn/erlang-sqlite3.git
   git+https://github.com/saleyn/erlcfg.git
   git+https://github.com/saleyn/erlexec.git
-  git+https://github.com/saleyn/erlfix.git
+  #git+https://github.com/saleyn/erlfix.git
   git+https://github.com/saleyn/erlsom.git
   git+https://github.com/saleyn/gen_timed_server.git
   git+https://github.com/saleyn/getopt.git#branch=format_error
@@ -53,6 +52,7 @@ source=(
   git+https://github.com/soranoba/bbmustache.git
   git+https://github.com/uwiger/edown.git
   git+https://github.com/uwiger/gproc.git
+  git+https://github.com/sile/jsone.git
   mysql::git+https://github.com/mysql-otp/mysql-otp.git
 )
 
@@ -96,11 +96,6 @@ prepare() {
   #ln -fs ../../rebar_vsn_plugin
 
   cd $srcdir
-  mkdir -p emmap/deps
-  cd $srcdir/emmap/deps
-  ln -fs ../../edown
-
-  cd $srcdir
   mkdir -p erlcfg/deps
   cd $srcdir/erlcfg/deps
   ln -fs ../../pmod_transform
@@ -121,11 +116,14 @@ build() {
   for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -printf "%f\n")
   do
     case $d in
-      rebar|rebar3)     cd ${srcdir}/$d && ./bootstrap;;
-      proper)           cd ${srcdir}/$d && make fast;;
+      rebar|rebar3)     ;; # cd ${srcdir}/$d && ./bootstrap;;
+      proper)           cd ${srcdir}/$d && make compile;;
+      bbmustache)       cd ${srcdir}/$d && make compile;;
+      gproc)            cd ${srcdir}/$d && make compile;;
      #rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
       stockdb)          cd ${srcdir}/$d && make app;;
       erlcron)          cd ${srcdir}/$d && make compile;;
+      jsone)            cd ${srcdir}/$d && make compile;;
      #ethrift)          cd ${srcdir}/$d && rebar compile;;
       io_libc)          cd ${srcdir}/$d && rebar compile;;
       emmap)            cd ${srcdir}/$d && rebar compile;;
@@ -201,16 +199,10 @@ package() {
   DIR=$(inst_dir erlexec)
   for i in priv/*/*; do install -m 755 -D $i $DIR/$i; done
 
-  cd "${srcdir}"/mochiweb
-  DIR=$(inst_dir mochiweb)
-  for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
+  #cd "${srcdir}"/mochiweb
+  #DIR=$(inst_dir mochiweb)
+  #for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
 
-  cd "${srcdir}"/eper
-  DIR=$(inst_dir eper)
-  install -m 755 -d "$DIR/bin"
-  install -m 755 -d "${pkgdir}/opt/bin"
-  for f in priv/bin/*; do cd $DIR/bin && ln -vs ../$f; done
-  
-  cd "${pkgdir}"/opt/pkg/${pkgbase}
+  cd "${INSTALL_DIR%/*}"
   ln -vs ${pkgver} current
 }
