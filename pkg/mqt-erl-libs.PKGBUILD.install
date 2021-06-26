@@ -1,9 +1,7 @@
-ENV_DIR="${pkgdir}"/opt/env/prod/erl-libs
 INSTALL_DIR="${pkgdir}"/opt/pkg/erl-libs/current
 
 post_install() {
     echo "New package version: $1"
-    #echo "Env dir            : ${ENV_DIR}"
     echo "Install dir        : ${INSTALL_DIR}"
 
     #mkdir -p "${ENV_DIR}"
@@ -19,9 +17,7 @@ post_install() {
 
 post_remove() {
     echo "Cleaning ${INSTALL_DIR}"
-    [ ! -d "${INSTALL_DIR}"              ] && rm -vf "${ENV_DIR}"/current
-    [ ! -d "${pkgdir}"/opt/pkg/erl-libs  ] && rm -rf "${ENV_DIR}"
     [ -L "${pkgdir}"/opt/bin/fixprint.es ] && rm -vf "${pkgdir}"/opt/bin/fixprint.es
     echo "Cleaning ${pkgdir}/opt/bin"
-    cd "${pkgdir}"/opt/bin && rm -vf ntop dtop eper redbug
+    cd "${pkgdir}"/opt/bin && rm -vf ntop dtop eper redbug rebar rebar3
 }

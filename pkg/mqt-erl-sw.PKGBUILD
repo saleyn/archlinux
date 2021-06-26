@@ -21,7 +21,7 @@ source=(
   git+https://github.com/rebar/rebar.git
 #git+https://github.com/saleyn/rebar3.git#branch=relx-vars
   git+https://github.com/rebar/rebar3.git
-  git+https://github.com/archaelus/edump.git
+  #git+https://github.com/archaelus/edump.git
 )
 
 noextract=(thrift.zip)
@@ -39,13 +39,14 @@ build() {
   for d in rebar rebar3 $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg ! -name rebar ! -name rebar3 -printf "%f\n")
   do
     echo "Making $d (${srcdir}/$d)"
+    cd ${srcdir}/$d
     case $d in
-      rebar)            cd ${srcdir}/$d && ./bootstrap;;
-      #rebar3)           cd ${srcdir}/$d && ./bootstrap && ./rebar3 upgrade relx && ./bootstrap;;
-      rebar3)           cd ${srcdir}/$d && ./bootstrap \
-                                        &&  wget -qO ./_build/default/lib/relx/priv/templates/extended_bin \
-                                                     https://raw.githubusercontent.com/saleyn/relx/vars/priv/templates/extended_bin \
-                                        && ./bootstrap;;
+      rebar*)          [ ! -x "${d}" ] && ./bootstrap || true;;
+      #rebar3)         ./bootstrap && ./rebar3 upgrade relx && ./bootstrap;;
+      #rebar3)           cd ${srcdir}/$d && ./bootstrap \
+      #                                  &&  wget -qO ./_build/default/lib/relx/priv/templates/extended_bin \
+      #                                               https://raw.githubusercontent.com/saleyn/relx/vars/priv/templates/extended_bin \
+      #                                  && ./bootstrap;;
       edump)            cd ${srcdir}/$d && ../rebar3/rebar3 escriptize;;
       *)                cd ${srcdir}/$d
                         make $JOBS;;
@@ -69,55 +70,61 @@ inst_dir() {
   fi
 }
 
+warn_build_references() {
+  : # Don't consider build references to $src_dir to be a problem
+  return 0
+}
+
 package() {
 
   echo "==== Packaging ${pkgbase} ==="
   BASE="${pkgdir}/opt/sw/${pkgbase}/${pkgver}"
 
-  cd "${srcdir}"
+  # NOTE: we are in ${srcdir}
 
-  REBAR3="${srcdir}/rebar3/rebar3"
+  #REBAR3="${srcdir}/rebar3/rebar3"
 
-  for d in $(ls -dtr */)
-  do
-    d=${d%/}
-    cd "${srcdir}/${d}"
-    d=${d##*/}
-    DIR=$(inst_dir $d)
-    mkdir -vp $DIR
-    INC=""
-    for f in $(find -maxdepth 4 -executable -type f -not -iwholename '*.git*' -not -iwholename '*bootstrap' -not -name '*.*'); do
-      INC+=" $f"
-    done
-    [ -d "ebin"    ] && INC+=" $(find ebin    -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
-    [ -d "src"     ] && INC+=" $(find src     -maxdepth 1 -type f)"
-    [ -d "include" ] && INC+=" $(find include -maxdepth 1 -type f -name '*.hrl')"
-    [ -d "test"    ] && INC+=" $(find test    -maxdepth 1 -type f -name '*.erl')"
-    [ -d "priv"    ] && INC+=" $(find priv    -maxdepth 2 -type f)"
-    if [ -d "_build"  ]; then
-        [ ! -f "${REBAR3}" ] && echo "rebar3 not found" && exit 1
-        path=$(${REBAR3} path)
-        files=$(find _build${path##*/_build} -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))
-        INC+=" ${files}"
-    fi
-    for i in $INC; do
-      j=$i
-      # Strip "_build/.../ebin/*.{app,beam}" to "ebin/*{app,beam}"
-      [[ $i == _build/* ]] && [[ "$i" =~ ([^/]+/+[^/]+)/*$ ]] && j=${BASH_REMATCH[1]}
-      install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/${j};
-    done
-    #if [ -d "deps" ]; then
-    #  cd deps
-    #  for i in */ebin/*.{app,beam} */src/*.erl; do install -v -m 644 -D $i $DIR/deps/$i; done
-    #fi
-  done
+  #for d in $(ls -dtr */)
+  #do
+  #  d=${d%/}
+  #  cd "${srcdir}/${d}"
+  #  d=${d##*/}
+  #  DIR=$(inst_dir $d)
+  #  mkdir -vp $DIR
+  #  INC=""
+  #  for f in $(find -maxdepth 4 -executable -type f -not -iwholename '*.git*' -not -iwholename '*bootstrap' -not -name '*.*'); do
+  #    INC+=" $f"
+  #  done
+  #  [ -d "ebin"    ] && INC+=" $(find ebin    -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
+  #  [ -d "src"     ] && INC+=" $(find src     -maxdepth 1 -type f)"
+  #  [ -d "include" ] && INC+=" $(find include -maxdepth 1 -type f -name '*.hrl')"
+  #  [ -d "test"    ] && INC+=" $(find test    -maxdepth 1 -type f -name '*.erl')"
+  #  [ -d "priv"    ] && INC+=" $(find priv    -maxdepth 2 -type f)"
+  #  if [ -d "_build"  ]; then
+  #      [ ! -f "${REBAR3}" ] && echo "rebar3 not found" && exit 1
+  #      path=$(${REBAR3} path)
+  #      files=$(find _build${path##*/_build} -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))
+  #      INC+=" ${files}"
+  #  fi
+  #  for i in $INC; do
+  #    j=$i
+  #    # Strip "_build/.../ebin/*.{app,beam}" to "ebin/*{app,beam}"
+  #    [[ $i == _build/* ]] && [[ "$i" =~ ([^/]+/+[^/]+)/*$ ]] && j=${BASH_REMATCH[1]}
+  #    install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/${j};
+  #  done
+  #  #if [ -d "deps" ]; then
+  #  #  cd deps
+  #  #  for i in */ebin/*.{app,beam} */src/*.erl; do install -v -m 644 -D $i $DIR/deps/$i; done
+  #  #fi
+  #done
   
   mkdir -p "${pkgdir}"/opt/bin
 
-  cd "${srcdir}/edump"
-  DIR=$(inst_dir edump)
-  cd ${DIR} && ln -vs _build/default/bin/edump
+  cp "rebar/rebar" "rebar3/rebar3" "${pkgdir}"/opt/bin
 
-  cd "${pkgdir}"/opt/sw/${pkgbase}
-  ln -vs ${pkgver} current
+  #if [ -d "${srcdir}/edump" ]; then
+  #  cd "${srcdir}/edump"
+  #  DIR=$(inst_dir edump)
+  #  cd ${DIR} && ln -vs _build/default/bin/edump
+  #fi
 }

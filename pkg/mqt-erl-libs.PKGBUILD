@@ -17,10 +17,8 @@ arch=('x86_64')
 license=(Apache)
 INSTALL_DIR="${pkgdir}/opt/sw/${pkgbase}/${pkgver}"
 #makedepends=(git rebar saxon-he)
-makedepends=(git)
+makedepends=(git mqt-erl-sw)
 source=(
-  #git+https://github.com/rebar/rebar.git
-  #git+https://github.com/erlang/rebar3.git
   #emysql::git+https://github.com/Eonblast/Emysql.git
   #escribe::git+https://github.com/saleyn/erl_scribe.git
   #git+https://github.com/erlware/rebar_vsn_plugin.git
@@ -54,6 +52,7 @@ source=(
   git+https://github.com/uwiger/gproc.git
   git+https://github.com/sile/jsone.git
   mysql::git+https://github.com/mysql-otp/mysql-otp.git
+  git+https://github.com/gen-smtp/gen_smtp.git
 )
 
 #noextract=(thrift.zip)
@@ -105,6 +104,11 @@ prepare() {
   cd $srcdir/cowboy/deps
   ln -fs ../../cowlib
   ln -fs ../../ranch
+
+  cd $srcdir
+  mkdir -p gen_smtp/deps
+  cd $srcdir/gen_smtp/deps
+  ln -fs ../../ranch
 }
 
 build() {
@@ -113,22 +117,33 @@ build() {
 
   rm -f ../${pkgbase}*.log.*
 
-  for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -printf "%f\n")
+  [ -z "$(whereis -b rebar  | awk '{print $2}')" ] && echo "Rebar not found in path!"  && exit 1
+  [ -z "$(whereis -b rebar3 | awk '{print $2}')" ] && echo "Rebar3 not found in path!" && exit 1
+
+  echo "DIR: ${srcdir}"
+
+  for d in $(find ${srcdir} -maxdepth 1 -type d -name 'rebar*'); do
+    cd "$d"
+    echo "Building ${d##*/}"
+    ./bootstrap
+  done
+
+  for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -not -name 'rebar*' -printf "%f\n")
   do
+    cd "${srcdir}/$d"
     case $d in
-      rebar|rebar3)     ;; # cd ${srcdir}/$d && ./bootstrap;;
-      proper)           cd ${srcdir}/$d && make compile;;
-      bbmustache)       cd ${srcdir}/$d && make compile;;
-      gproc)            cd ${srcdir}/$d && make compile;;
-     #rebar_vsn_plugin) cd ${srcdir}/$d && make compile;;
-      stockdb)          cd ${srcdir}/$d && make app;;
-      erlcron)          cd ${srcdir}/$d && make compile;;
-      jsone)            cd ${srcdir}/$d && make compile;;
-     #ethrift)          cd ${srcdir}/$d && rebar compile;;
-      io_libc)          cd ${srcdir}/$d && rebar compile;;
-      emmap)            cd ${srcdir}/$d && rebar compile;;
-      *)                cd ${srcdir}/$d
-                        echo "Making $d ($PWD})"
+      bbmustache|\
+      erlcron|\
+      emmap|\
+      io_libc|\
+      jsone|\
+      gproc|\
+      rebar_vsn_plugin|\
+      proper)
+                        rebar compile;;
+      gen_smtp)         rebar3 upgrade ranch
+                        rebar3 compile;;
+      *)                echo "Making $d ($PWD})"
                         make $JOBS;;
     esac
   done
@@ -150,6 +165,11 @@ inst_dir() {
   fi
 }
 
+warn_build_references() {
+  : # Don't consider build references to $src_dir to be a problem
+  return 0
+}
+
 package() {
 
   echo "==== Packaging ${pkgbase} ==="
@@ -161,9 +181,8 @@ package() {
   [ "$OS" = "Windows_NT" ] && BIN_DIR="${pkgdir}/c/bin" || BIN_DIR="${pkgdir}/opt/bin"
 
   mkdir -vp "$BIN_DIR"
-  cp -v rebar/rebar rebar3/rebar3 "$BIN_DIR"
 
-  for d in $(ls -dtr */ | grep -E -v "^rebar"); do
+  for d in $(ls -dtr */); do
     d=${d%/}
     cd "${srcdir}/${d}"
     d=${d##*/}
@@ -177,7 +196,6 @@ package() {
     [ -d "test"    ] && INC+=" $(find test    -maxdepth 1 -type f -name '*.erl')"
     [ -d "priv"    ] && INC+=" $(find priv    -maxdepth 2 -type f)"
     if [ -d "_build"  ]; then
-        [ -z "$(which rebar3 2>/dev/null)" ] && echo "rebar3 not found" && exit 1
         path=$(rebar3 path)
         files=$(find _build${path##*/_build} -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))
         INC+=" ${files}"
@@ -187,7 +205,7 @@ package() {
       j=$i
       # Strip "_build/.../ebin/*.{app,beam}" to "ebin/*{app,beam}"
       [[ $i == _build/* ]] && [[ "$i" =~ ([^/]+/+[^/]+)/*$ ]] && j=${BASH_REMATCH[1]}
-      install -m $(if [ -x "$i" ]; then echo 755; else echo 644; fi) -D $i $DIR/${j};
+      install -m $([ -x "$i" ] && echo 755 || echo 644) -D $i ${pkgdir}$DIR/${j};
     done
     #if [ -d "deps" ]; then
     #  cd deps
@@ -195,14 +213,17 @@ package() {
     #fi
   done
   
+  set -x
   cd "${srcdir}"/erlexec
   DIR=$(inst_dir erlexec)
   for i in priv/*/*; do install -m 755 -D $i $DIR/$i; done
+  set +x
 
   #cd "${srcdir}"/mochiweb
   #DIR=$(inst_dir mochiweb)
   #for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
 
   cd "${INSTALL_DIR%/*}"
+  rm -f current
   ln -vs ${pkgver} current
 }
