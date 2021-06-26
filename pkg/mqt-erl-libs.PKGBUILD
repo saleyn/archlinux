@@ -52,7 +52,8 @@ source=(
   git+https://github.com/uwiger/gproc.git
   git+https://github.com/sile/jsone.git
   mysql::git+https://github.com/mysql-otp/mysql-otp.git
-  git+https://github.com/gen-smtp/gen_smtp.git
+  #git+https://github.com/gen-smtp/gen_smtp.git
+  git+https://github.com/saleyn/gen_smtp.git#branch=logger
 )
 
 #noextract=(thrift.zip)
@@ -213,17 +214,17 @@ package() {
     #fi
   done
   
-  set -x
-  cd "${srcdir}"/erlexec
-  DIR=$(inst_dir erlexec)
-  for i in priv/*/*; do install -m 755 -D $i $DIR/$i; done
-  set +x
+  #cd "${srcdir}"/erlexec
+  #DIR=$(inst_dir erlexec)
+  #for i in priv/*/*; do install -m 755 -D $i $DIR/$i; done
 
   #cd "${srcdir}"/mochiweb
   #DIR=$(inst_dir mochiweb)
   #for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
 
-  cd "${INSTALL_DIR%/*}"
+  echo "Dir: $PWD"
+  echo "Pkg: ${pkgdir}"
+  cd "${pkgdir}" # "${INSTALL_DIR%/*}"
   rm -f current
   ln -vs ${pkgver} current
 }
