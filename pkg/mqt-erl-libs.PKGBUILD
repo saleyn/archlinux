@@ -15,7 +15,13 @@ pkgrel=1
 pkgdesc='Collection of open-source Erlang libraries'
 arch=('x86_64')
 license=(Apache)
-INSTALL_DIR="${pkgdir}/opt/sw/${pkgbase}/${pkgver}"
+
+if [ -d /opt/sw/${pkgbase} ]; then
+  INSTALL_DIR="${pkgdir}/opt/sw/${pkgbase}/${pkgver}"
+else
+  INSTALL_DIR="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}"
+fi
+
 #makedepends=(git rebar saxon-he)
 makedepends=(git mqt-erl-sw)
 source=(
