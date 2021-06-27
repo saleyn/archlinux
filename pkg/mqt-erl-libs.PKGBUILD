@@ -59,7 +59,8 @@ source=(
   git+https://github.com/sile/jsone.git
   mysql::git+https://github.com/mysql-otp/mysql-otp.git
   #git+https://github.com/gen-smtp/gen_smtp.git
-  git+https://github.com/saleyn/gen_smtp.git#branch=logger
+  git+https://github.com/saleyn/gen_smtp.git#branch=norm-err
+  git+https://github.com/processone/iconv.git
 )
 
 #noextract=(thrift.zip)
@@ -148,6 +149,7 @@ build() {
       rebar_vsn_plugin|\
       proper)
                         rebar compile;;
+      iconv)            rebar get-deps; rebar compile;;
       gen_smtp)         rebar3 upgrade ranch
                         rebar3 compile;;
       *)                echo "Making $d ($PWD})"
