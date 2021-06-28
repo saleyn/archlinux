@@ -202,7 +202,9 @@ package() {
     cd "${srcdir}/${d}"
     d=${d##*/}
     DIR=$(inst_dir $d)
-    mkdir -vp $DIR
+    [ "${DIR:0:1}" = "/" ] && DIR="${DIR#/}"
+
+    ! mkdir -vp $DIR && echo "Cannot create dir '$DIR' (pwd=$PWD)" && exit 1
     INC=""
     [ -d "bin"     ] && INC+=" $(find bin     -maxdepth 1 -type f)"
     [ -d "ebin"    ] && INC+=" $(find ebin    -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
@@ -220,7 +222,8 @@ package() {
       j=$i
       # Strip "_build/.../ebin/*.{app,beam}" to "ebin/*{app,beam}"
       [[ $i == _build/* ]] && [[ "$i" =~ ([^/]+/+[^/]+)/*$ ]] && j=${BASH_REMATCH[1]}
-      install -m $([ -x "$i" ] && echo 755 || echo 644) -D $i ${pkgdir}$DIR/${j};
+      [ -x "$i" ] && M=755 || M=644
+      ! install -m $M -D $i ${pkgdir}/$DIR/${j} && echo "Failed to install '$i' to '${pkgdir}/$DIR/${j}'" && exit 1
     done
     #if [ -d "deps" ]; then
     #  cd deps
