@@ -72,6 +72,7 @@ DELETE_PKG=0
 DELETE_BUILD=0
 PACMAN_OPTS=""
 
+export NPROC=$(nproc)
 export CC=gcc
 export CXX=g++
 export F77=gfortran
@@ -132,6 +133,7 @@ while [ -n "$1" ]; do
     -U) UPD_CHECKSUMS=1;;
     -e|--noextract) PACMAN_OPTS+=" -e";;
     -r|--repackage) PACMAN_OPTS+=" -R";;
+    -j) shift; export NPROC=$1;;
     --confirm)      CONFIRM="";;
     --force)        PACMAN_OPTS+=" --force";;
     --debug)        DEBUG=1;;
@@ -158,8 +160,8 @@ if (( DEBUG )); then
   echo "Manifest filter: '$FILTER'"
 fi
 
-if ! grep -q '^COMPRESSXZ=(7z' /etc/makepkg.conf ; then
-  echo -en "\e[1;33;40mWarning: add 'COMPRESS=(7z a dummy -txz -si -so)'" \
+if ! egrep -q '^COMPRESSXZ=\([7x]z' /etc/makepkg.conf; then
+  echo -en "\e[1;33;40mWarning: add 'COMPRESSXZ=(7z a dummy -txz -si -so)'" \
            " to /etc/makepkg.conf and install p7zip package\n\e[0m"
 fi
 

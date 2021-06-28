@@ -119,6 +119,27 @@ prepare() {
   ln -fs ../../ranch
 }
 
+function do_process() {
+  local d="$1"
+  cd "${srcdir}/$d"
+  case $d in
+    bbmustache|\
+    erlcron|\
+    emmap|\
+    io_libc|\
+    jsone|\
+    gproc|\
+    rebar_vsn_plugin|\
+    proper)
+                      rebar compile;;
+    iconv)            rebar get-deps; rebar compile;;
+    gen_smtp)         rebar3 upgrade ranch
+                      rebar3 compile;;
+    *)                echo "Making $d ($PWD})"
+                      make $JOBS;;
+  esac
+}
+
 build() {
   local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
   JOBS=${JOBS:- -j$(nproc)}
@@ -136,26 +157,11 @@ build() {
     ./bootstrap
   done
 
-  for d in $(find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -not -name 'rebar*' -printf "%f\n")
-  do
-    cd "${srcdir}/$d"
-    case $d in
-      bbmustache|\
-      erlcron|\
-      emmap|\
-      io_libc|\
-      jsone|\
-      gproc|\
-      rebar_vsn_plugin|\
-      proper)
-                        rebar compile;;
-      iconv)            rebar get-deps; rebar compile;;
-      gen_smtp)         rebar3 upgrade ranch
-                        rebar3 compile;;
-      *)                echo "Making $d ($PWD})"
-                        make $JOBS;;
-    esac
-  done
+  export srcdir
+  export -f do_process
+
+  find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -not -name 'rebar*' -printf "%f\n" | \
+    parallel --max-args 1 -j${NPROC} do_process {}
 }
 
 inst_dir() {
