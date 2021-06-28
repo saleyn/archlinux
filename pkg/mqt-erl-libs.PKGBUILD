@@ -135,7 +135,8 @@ function do_process() {
     rebar_vsn_plugin|\
     proper)
                       rebar compile;;
-    iconv)            rebar get-deps; rebar compile;;
+    iconv)            wget -q -P src https://raw.githubusercontent.com/processone/p1_utils/master/src/p1_nif_utils.erl
+                      rebar compile;;
     gen_smtp)         rebar3 upgrade ranch
                       rebar3 compile;;
     *)                echo "Making $d ($PWD})"
@@ -232,7 +233,7 @@ package() {
     LINK="${d%%-*}"
     mkdir -pv "${pkgdir}/${LINK_DIR}"
     cd "${pkgdir}/${LINK_DIR}"
-    ln -fs "${DIR}" "${LINK}"
+    ln -fs "/${DIR}" "${LINK}"
     #if [ -d "deps" ]; then
     #  cd deps
     #  for i in */ebin/*.{app,beam} */src/*.erl; do install -v -m 644 -D $i $DIR/deps/$i; done

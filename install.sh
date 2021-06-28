@@ -131,7 +131,7 @@ while [ -n "$1" ]; do
             exit 1;;
         esac;;
     -U) UPD_CHECKSUMS=1;;
-    -e|--noextract) PACMAN_OPTS+=" -e";;
+    -e|--noextract) PACMAN_OPTS+=" -e --repackage";;
     -r|--repackage) PACMAN_OPTS+=" -R";;
     -j) shift; export NPROC=$1;;
     --confirm)      CONFIRM="";;
