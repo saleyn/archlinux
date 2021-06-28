@@ -17,10 +17,13 @@ arch=('x86_64')
 license=(Apache)
 
 if [ -d /opt/sw/${pkgbase} ]; then
-  INSTALL_DIR="${pkgdir}/opt/sw/${pkgbase}/${pkgver}"
+  BASE="opt/sw"
 else
-  INSTALL_DIR="${pkgdir}/opt/pkg/${pkgbase}/${pkgver}"
+  BASE="opt/pkg"
 fi
+
+INSTALL_DIR="${BASE}/${pkgbase}/${pkgver}"
+LINK_DIR="opt/pkg/erl-links"
 
 #makedepends=(git rebar saxon-he)
 makedepends=(git mqt-erl-sw)
@@ -160,8 +163,10 @@ build() {
   export srcdir
   export -f do_process
 
-  find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -not -name 'rebar*' -printf "%f\n" | \
-    parallel --max-args 1 -j${NPROC} do_process {}
+  if [ -z "$SKIP_BUILD" ]; then
+    find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -not -name 'rebar*' -printf "%f\n" | \
+      parallel --max-args 1 -j${NPROC} do_process {}
+  fi
 }
 
 inst_dir() {
@@ -188,23 +193,21 @@ warn_build_references() {
 package() {
 
   echo "==== Packaging ${pkgbase} ==="
-  BASE="${INSTALL_DIR}"
 
   cd "${srcdir}"
 
   # Install rebar
   [ "$OS" = "Windows_NT" ] && BIN_DIR="${pkgdir}/c/bin" || BIN_DIR="${pkgdir}/opt/bin"
 
-  mkdir -vp "$BIN_DIR"
+  mkdir -p "$BIN_DIR"
 
   for d in $(ls -dtr */); do
     d=${d%/}
     cd "${srcdir}/${d}"
     d=${d##*/}
     DIR=$(inst_dir $d)
-    [ "${DIR:0:1}" = "/" ] && DIR="${DIR#/}"
 
-    ! mkdir -vp $DIR && echo "Cannot create dir '$DIR' (pwd=$PWD)" && exit 1
+    ! mkdir -p $DIR && echo "Cannot create dir '$DIR' (pwd=$PWD)" && exit 1
     INC=""
     [ -d "bin"     ] && INC+=" $(find bin     -maxdepth 1 -type f)"
     [ -d "ebin"    ] && INC+=" $(find ebin    -maxdepth 1 -type f \( -name '*.app' -o -name '*.beam' \))"
@@ -225,6 +228,11 @@ package() {
       [ -x "$i" ] && M=755 || M=644
       ! install -m $M -D $i ${pkgdir}/$DIR/${j} && echo "Failed to install '$i' to '${pkgdir}/$DIR/${j}'" && exit 1
     done
+
+    LINK="${d%%-*}"
+    mkdir -pv "${pkgdir}/${LINK_DIR}"
+    cd "${pkgdir}/${LINK_DIR}"
+    ln -fs "${DIR}" "${LINK}"
     #if [ -d "deps" ]; then
     #  cd deps
     #  for i in */ebin/*.{app,beam} */src/*.erl; do install -v -m 644 -D $i $DIR/deps/$i; done
@@ -239,9 +247,8 @@ package() {
   #DIR=$(inst_dir mochiweb)
   #for i in examples/*/*; do install -m 644 -D $i $DIR/$i; done
 
-  echo "Dir: $PWD"
-  echo "Pkg: ${pkgdir}"
-  cd "${pkgdir}" # "${INSTALL_DIR%/*}"
-  rm -f current
-  ln -vs ${pkgver} current
+  echo "Pkg:     ${pkgdir}"
+  echo "Install: /${INSTALL_DIR}"
+  cd "${pkgdir}/${INSTALL_DIR%/*}"
+  ln -vfs ${pkgver} current
 }
