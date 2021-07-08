@@ -258,7 +258,7 @@ sed -n "$FILTER" Manifest | \
 
     PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
 
-    rm -f $name*.log.*  # Remove stale versioned log files
+    rm -f $name*.log.* $mqtname*.log.* # Remove stale versioned log files
 
     (( UPD_CHECKSUMS )) && update_checksums PKGBUILD
 

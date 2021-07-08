@@ -37,8 +37,8 @@ mqt-utxx            utxx
 mqt-eixx            eixx
 mqt-sdb             sdb
 mqt-armadillo
-mqt-erl-sw          erl-sw
-mqt-erl-libs        erl-libs
+erl-sw
+erl-libs
 
 usr/scribe          # Needs to be installed after boost and thrift
 usr/stringencoders  StringEncoders

@@ -1,18 +1,22 @@
 ifneq (,$(package))
-  # ok
+  PACKAGE=$(package)
 else ifneq (,$(p))
-  # ok
+  PACKAGE=$(p)
 else
   $(error Missing 'package=' option!)
 endif
 
 all:
-	./install.sh --force -p $(package)$(p)$(if $(noextract), -e)$(if $(jobs), -j $(jobs))
+	./install.sh --force -p $(PACKAGE)$(if $(noextract), -e)$(if $(jobs), -j $(jobs))
 
 i inst install:
-	[ -f build/$(package)/$(package)-*.pkg.tar.zst ] && \
-    sudo pacman -U build/$(package)/$(package)-*.pkg.tar.zst --noconfirm
+	[ -f build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst ] && \
+    sudo pacman -U build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst --noconfirm
 
 help:
-	@echo "make package=Package"
-	@echo "make p=Package"
+	@echo "Make/install package:"
+	@echo "  make [install] [noextract=1] package=Package"
+	@echo "  make [install] [noextract=1] p=Package"
+	@echo
+	@echo "This will just repackage without rebuilding:"
+	@echo "  SKIP_BUILD=1 make noextract=1 p=Package"
