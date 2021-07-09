@@ -1,0 +1,25 @@
+INSTALL_DIR="${pkgdir}"/opt/sw/erl-sw/current
+BIN_DIR="${pkgdir}"/opt/bin
+
+post_install() {
+    echo "New package version: $1"
+    echo "Install dir        : ${INSTALL_DIR}"
+
+    #mkdir -p "${BIN_DIR}"
+
+    #cd "${BIN_DIR}"
+    #echo "Cur dir            : $PWD"
+    #[ -d ${INSTALL_DIR}/edump-*/edump ] && ln -vs ${INSTALL_DIR}/edump-*/edump
+    #ln -vs ${INSTALL_DIR}/rebar-*/rebar
+    #ln -vs ${INSTALL_DIR}/rebar3-*/rebar3
+}
+
+post_remove() {
+    echo "Cleaning ${BIN_DIR}"
+    cd "${BIN_DIR}" && rm -vf edump rebar rebar3
+}
+
+#post_upgrade() {
+#    post_remove
+#    post_install
+#}
