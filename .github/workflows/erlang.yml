@@ -9,18 +9,17 @@ on:
 
 jobs:
   ci:
-    name: Build and install ${{matrix.package}} on ${{matrix.otp_vsn}} and ${{matrix.os}}
+    name: Build and install on ${{matrix.otp_vsn}} and ${{matrix.os}}
     runs-on: ${{matrix.os}}
 
     strategy:
       matrix:
         otp_vsn: [23.1, 24.0]
         os:      [ubuntu-latest]
-        package: [mqt-erl-sw, mqt-erl-libs]
 
     container:
-      image:   archlinux
-      options: --privileged
+      image:     archlinux
+      options:   --privileged
       volumes:
         - /opt:/opt
       #image: erlang:${{matrix.otp_vsn}}
@@ -28,4 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install ${{matrix.package}}
-        run:  ./install.sh -i -p ${{matrix.package}}
+        run:
+          - ./install.sh -i -p erl-sw
+          - ./install.sh -i -p erl-libs
