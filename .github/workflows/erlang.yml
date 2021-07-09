@@ -27,6 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install ${{matrix.package}}
-        run:
-          - ./install.sh -i -p erl-sw
-          - ./install.sh -i -p erl-libs
+        run: |
+          ./install.sh -i -p erl-sw
+          ./install.sh -i -p erl-libs
