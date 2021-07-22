@@ -47,7 +47,7 @@ source=(
   #git+https://github.com/mochi/mochiweb.git
   git+https://github.com/ninenines/cowboy.git
   git+https://github.com/ninenines/ranch.git
-  git+https://github.com/saleyn/erlang-sqlite3.git
+  sqlite::git+https://github.com/saleyn/erlang-sqlite3.git
   git+https://github.com/saleyn/erlcfg.git
   git+https://github.com/saleyn/erlexec.git
   #git+https://github.com/saleyn/erlfix.git
@@ -64,6 +64,9 @@ source=(
   #git+https://github.com/gen-smtp/gen_smtp.git
   git+https://github.com/saleyn/gen_smtp.git#branch=norm-err
   git+https://github.com/processone/iconv.git
+  git+https://github.com/benoitc/cbt.git    #tag=1.2.2
+  git+https://github.com/refuge/cowdb.git
+  git+https://github.com/yuce/pot.git
 )
 
 #noextract=(thrift.zip)
@@ -120,6 +123,11 @@ prepare() {
   mkdir -p gen_smtp/deps
   cd $srcdir/gen_smtp/deps
   ln -fs ../../ranch
+
+  cd $srcdir
+  mkdir -p cowdb/deps
+  cd $srcdir/cowdb/deps
+  ln -fs ../../cbt
 }
 
 function do_process() {
@@ -133,7 +141,9 @@ function do_process() {
     jsone|\
     gproc|\
     rebar_vsn_plugin|\
-    proper)
+    proper|\
+    cbt|\
+    cowdb)
                       rebar compile;;
     iconv)            wget -q -P src https://raw.githubusercontent.com/processone/p1_utils/master/src/p1_nif_utils.erl
                       rebar compile;;
