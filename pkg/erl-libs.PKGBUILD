@@ -82,52 +82,37 @@ prepare() {
   #mv erl ethrift
 
   rm util/src/decompiler.erl
-  cd $srcdir
-  #mkdir -p "lager/deps"
-  #cd $srcdir/lager/deps
-  #ln -fs ../../goldrush
+
+  # Install links to deps by reading {deps, [...]} entry in rebar.config
+  # for each project
+  for f in $(find . -maxdepth 1 -type d -not -name '.' \
+                                        -not -name src \
+                                        -not -name pkg \
+                                        -not -name 'rebar*' \
+                                        -printf "%f\n"); do
+    cd $srcdir/$f
+    if [ -f rebar.config ]; then
+      DEPS=( $(erl -eval 'case file:consult("rebar.config") of
+                            {ok, L} ->
+                              case proplists:get_value(deps, L, []) of
+                                [] -> "";
+                                V -> [io:format("~p\n", [element(1,I)]) || I <- V]
+                              end;
+                            _ ->
+                              io:format(standard_error, "No rebar.config found\n", [])
+                          end, halt(0).' -noinput -noshell) )
+      if [ ${#DEPS[@]} -gt 0 ]; then
+        echo "Link dependencies of '$f': ${DEPS[@]}"
+
+        mkdir -p deps
+        cd deps
+
+        for p in ${DEPS[@]}; do ln -fs ../../$p; done
+      fi
+    fi
+  done
 
   cd $srcdir
-  mkdir -p jiffy/deps
-  cd $srcdir/jiffy/deps
-  ln -fs ../../proper
-
-  cd $srcdir
-  mkdir -p parse_trans/deps
-  cd $srcdir/parse_trans/deps
-  ln -fs ../../edown
-
-  cd $srcdir
-  mkdir -p sheriff/deps
-  cd $srcdir/sheriff/deps
-  ln -fs ../../parse_trans
-  ln -fs ../../edown
-
-  cd $srcdir
-  mkdir -p erlcron/deps
-  cd $srcdir/erlcron/deps
-  #ln -fs ../../rebar_vsn_plugin
-
-  cd $srcdir
-  mkdir -p erlcfg/deps
-  cd $srcdir/erlcfg/deps
-  ln -fs ../../pmod_transform
-
-  cd $srcdir
-  mkdir -p cowboy/deps
-  cd $srcdir/cowboy/deps
-  ln -fs ../../cowlib
-  ln -fs ../../ranch
-
-  cd $srcdir
-  mkdir -p gen_smtp/deps
-  cd $srcdir/gen_smtp/deps
-  ln -fs ../../ranch
-
-  cd $srcdir
-  mkdir -p cowdb/deps
-  cd $srcdir/cowdb/deps
-  ln -fs ../../cbt
 }
 
 function do_process() {

@@ -6,12 +6,19 @@ else
   $(error Missing 'package=' option!)
 endif
 
-all:
-	./install.sh --force -p $(PACKAGE)$(if $(noextract), -e)$(if $(jobs), -j $(jobs))
+all: build
 
-i inst install:
+build: build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst
+
+remove:
+	./install.sh -c -p $(PACKAGE)
+
+i inst install: build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst
 	[ -f build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst ] && \
     sudo pacman -U build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst --noconfirm
+
+build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst:
+	./install.sh --force -p $(PACKAGE)$(if $(noextract), -e)$(if $(jobs), -j $(jobs))
 
 help:
 	@echo "Make/install package:"

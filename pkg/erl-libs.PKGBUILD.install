@@ -18,6 +18,6 @@ post_install() {
 post_remove() {
     echo "Cleaning ${INSTALL_DIR}"
     [ -L "${pkgdir}"/opt/bin/fixprint.es ] && rm -vf "${pkgdir}"/opt/bin/fixprint.es
-    echo "Cleaning ${pkgdir}/opt/bin"
-    cd "${pkgdir}"/opt/bin && rm -vf ntop dtop eper redbug rebar rebar3
+    #echo "Cleaning ${pkgdir}/opt/bin"
+    #cd "${pkgdir}"/opt/bin && rm -vf ntop dtop eper redbug rebar rebar3
 }
