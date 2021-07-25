@@ -34,29 +34,29 @@ source=(
   #git+https://github.com/saleyn/secdb.git
   #thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
   bcrypt::git+https://github.com/saleyn/erlang-bcrypt.git
-  cowlib::git+https://github.com/ninenines/cowlib.git#branch=master
-  #emmap::git+https://github.com/saleyn/emmap.git#branch=atomic
+  git+https://github.com/ninenines/ranch.git
+  emmap::git+https://github.com/saleyn/emmap.git ## #branch=atomic
   git+https://github.com/DeadZen/goldrush.git#tag=0.1.6
   git+https://github.com/davisp/jiffy.git
+    cowlib::git+https://github.com/ninenines/cowlib.git#branch=master
+  #git+https://github.com/maxlapshin/io_libc.git
+  #git+https://github.com/mochi/mochiweb.git
   git+https://github.com/erlang/pmod_transform
   git+https://github.com/erlware/erlcron.git
   git+https://github.com/esl/parse_trans.git
   git+https://github.com/extend/sheriff.git
   git+https://github.com/manopapad/proper.git
-  #git+https://github.com/maxlapshin/io_libc.git
-  #git+https://github.com/mochi/mochiweb.git
-  git+https://github.com/ninenines/cowboy.git
-  git+https://github.com/ninenines/ranch.git
-  sqlite::git+https://github.com/saleyn/erlang-sqlite3.git
-  git+https://github.com/saleyn/erlcfg.git
-  git+https://github.com/saleyn/erlexec.git
-  #git+https://github.com/saleyn/erlfix.git
   git+https://github.com/saleyn/erlsom.git
   git+https://github.com/saleyn/gen_timed_server.git
   git+https://github.com/saleyn/getopt.git#branch=format_error
   git+https://github.com/saleyn/proto.git
   git+https://github.com/saleyn/util.git
   git+https://github.com/soranoba/bbmustache.git
+  git+https://github.com/ninenines/cowboy.git
+  sqlite::git+https://github.com/saleyn/erlang-sqlite3.git
+  git+https://github.com/saleyn/erlcfg.git
+  git+https://github.com/saleyn/erlexec.git
+  #git+https://github.com/saleyn/erlfix.git
   git+https://github.com/uwiger/edown.git
   git+https://github.com/uwiger/gproc.git
   git+https://github.com/sile/jsone.git
@@ -133,10 +133,10 @@ prepare() {
 function do_process() {
   local d="$1"
   cd "${srcdir}/$d"
+  echo "Building $d"
   case $d in
     bbmustache|\
     erlcron|\
-    emmap|\
     io_libc|\
     jsone|\
     gproc|\
@@ -147,6 +147,9 @@ function do_process() {
                       rebar compile;;
     iconv)            wget -q -P src https://raw.githubusercontent.com/processone/p1_utils/master/src/p1_nif_utils.erl
                       rebar compile;;
+
+    emmap)            rebar3 compile;;
+
     gen_smtp)         rebar3 upgrade ranch
                       rebar3 compile;;
     *)                echo "Making $d ($PWD})"
@@ -176,7 +179,7 @@ build() {
 
   if [ -z "$SKIP_BUILD" ]; then
     find ${srcdir} -maxdepth 1 -type d -not -name src -not -name pkg -not -name 'rebar*' -printf "%f\n" | \
-      parallel --max-args 1 -j${NPROC} do_process {}
+      parallel --max-args 1 ${JOBS} do_process {}
   fi
 }
 

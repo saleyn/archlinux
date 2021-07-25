@@ -1,6 +1,8 @@
 #!/bin/bash -e
 # vim:ts=2 sw=2 et smarttab
 
+EXT=zst
+
 function usage() {
   echo "Build/Install all or selected package"
   echo
@@ -16,7 +18,7 @@ function usage() {
   echo "  -D              - Download only (no build/install)"
   echo "  -R              - Remove the package(s)"
   echo "  -C              - Clear build directory for the given package"
-  echo "  -c              - Clear the package-*.xz installation file"
+  echo "  -c              - Clear the package-*.$EXT installation file"
   echo "  -t ToolChain    - Specify toolchain (gcc | clang | intel)"
   echo "  -U              - Update checksums of the given package(s)"
   echo "  --force         - Bypass the conflict checks"
@@ -26,11 +28,11 @@ function usage() {
 }
 
 function remove_pkg() {
-  [ ! -f build/$1/$1*.xz ] && \
-    echo "No pre-built package build/$1/$1*.xz found!" && \
+  [ ! -f build/$1/$1*.$EXT ] && \
+    echo "No pre-built package build/$1/$1*.$EXT found!" && \
     return
-  echo "Deleting build/$1/$1*.xz"
-  rm -f build/$1/$1*.xz
+  echo "Deleting build/$1/$1*.$EXT"
+  rm -f build/$1/$1*.$EXT
 }
 
 function remove_build() {
@@ -256,7 +258,7 @@ sed -n "$FILTER" Manifest | \
       ../../util/gen-post-install.sh $s $dirname $mqtname.install
     fi
 
-    PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
+    PKG="$(find -maxdepth 1 -name "*.$EXT" -printf '%f')"
 
     rm -f $name*.log.* $mqtname*.log.* # Remove stale versioned log files
 
@@ -269,7 +271,7 @@ sed -n "$FILTER" Manifest | \
     else
       echo "makepkg -L -s ${CONFIRM} ${PACMAN_OPTS}"
       makepkg -L -s ${CONFIRM} ${PACMAN_OPTS}
-      PKG="$(find -maxdepth 1 -name '*.xz' -printf '%f')"
+      PKG="$(find -maxdepth 1 -name "*.$EXT" -printf '%f')"
       [ -z "$PKG" ] && exit 1
     fi
 
