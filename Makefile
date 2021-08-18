@@ -10,6 +10,8 @@ all: build
 
 build: build/$(PACKAGE)/$(PACKAGE)-*.pkg.tar.zst
 
+ci ic: clear install
+
 c clear remove:
 	./install.sh -c -p $(PACKAGE)
 

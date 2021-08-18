@@ -51,6 +51,7 @@ source=(
   git+https://github.com/saleyn/getopt.git#branch=format_error
   git+https://github.com/saleyn/proto.git
   git+https://github.com/saleyn/util.git
+  git+https://github.com/saleyn/etran.git
   git+https://github.com/soranoba/bbmustache.git
   git+https://github.com/ninenines/cowboy.git
   sqlite::git+https://github.com/saleyn/erlang-sqlite3.git
@@ -128,6 +129,7 @@ function do_process() {
     rebar_vsn_plugin|\
     proper|\
     cbt|\
+    etran|\
     cowdb)
                       rebar compile;;
     iconv)            wget -q -P src https://raw.githubusercontent.com/processone/p1_utils/master/src/p1_nif_utils.erl
