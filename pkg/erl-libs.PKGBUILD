@@ -33,6 +33,7 @@ source=(
   #git+https://github.com/erlware/rebar_vsn_plugin.git
   #git+https://github.com/saleyn/secdb.git
   #thrift.zip::https://github.com/saleyn/thrift/archive/uds.zip
+  git+https://github.com/saleyn/sorted_set.git
   bcrypt::git+https://github.com/saleyn/erlang-bcrypt.git
   git+https://github.com/ninenines/ranch.git
   emmap::git+https://github.com/saleyn/emmap.git ## #branch=atomic
@@ -68,6 +69,8 @@ source=(
   git+https://github.com/benoitc/cbt.git    #tag=1.2.2
   git+https://github.com/refuge/cowdb.git
   git+https://github.com/yuce/pot.git
+  git+https://github.com/beam-telemetry/telemetry.git
+  git+https://github.com/yakaz/yamerl.git
 )
 
 #noextract=(thrift.zip)
@@ -135,7 +138,9 @@ function do_process() {
     iconv)            wget -q -P src https://raw.githubusercontent.com/processone/p1_utils/master/src/p1_nif_utils.erl
                       rebar compile;;
 
-    emmap)            rebar3 compile;;
+    emmap|\
+    sorted_set|\
+    telemetry)        rebar3 compile;;
 
     gen_smtp)         rebar3 upgrade ranch
                       rebar3 compile;;
