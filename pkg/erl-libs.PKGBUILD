@@ -26,7 +26,7 @@ INSTALL_DIR="${BASE}/${pkgbase}/${pkgver}"
 LINK_DIR="opt/pkg/erl-links"
 
 #makedepends=(git rebar saxon-he)
-makedepends=(git erl-sw)
+makedepends=(git erl-sw rust)
 source=(
   #emysql::git+https://github.com/Eonblast/Emysql.git
   #escribe::git+https://github.com/saleyn/erl_scribe.git
@@ -105,6 +105,9 @@ prepare() {
                             _ ->
                               io:format(standard_error, "No rebar.config found\n", [])
                           end, halt(0).' -noinput -noshell) )
+      # Add exceptions
+      [ "${f%%*/}" = "sheriff" ] && DEPS=( ${DEPS[@]} edown )
+
       if [ ${#DEPS[@]} -gt 0 ]; then
         echo "Link dependencies of '$f': ${DEPS[@]}"
 
