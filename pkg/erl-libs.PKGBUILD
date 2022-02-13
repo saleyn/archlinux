@@ -145,11 +145,12 @@ function do_process() {
     sorted_set|\
     telemetry)        rebar3 compile;;
 
-    gen_smtp)         rebar3 upgrade ranch
+    gen_smtp)         #rebar3 upgrade ranch
                       rebar3 compile;;
     *)                echo "Making $d ($PWD})"
                       make $JOBS;;
   esac
+  echo "--> Done building $d"
 }
 
 build() {
