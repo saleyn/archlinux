@@ -7,7 +7,7 @@ if [ "$1" != "-r" -a $EUID -eq 0 ]; then
     exit 1
 fi
 
-for f in go p7zip perl; do
+for f in go p7zip perl binutils make gcc; do
   if ! pacman -Q $f &>/dev/null; then
     sudo pacman --noconfirm -S $f
   fi
@@ -59,6 +59,7 @@ elif ! pacman -Q yay &>/dev/null; then
   pushd yay
   makepkg -si --noconfirm
   popd
+  sudo ln -s /usr/bin/yay /usr/bin/pacaur
 fi
 cd /tmp
 rm -fr /tmp/build
