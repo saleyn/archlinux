@@ -26,7 +26,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: bajankristof/setup-erlang@master
+        with:
+          otp-version: ${{ matrix.otp_vsn }}
+      - name: Create non-root user
+        run: useradd -m arch
       - name: Install ${{matrix.package}}
         run: |
-          ./install.sh -p erl-sw
-          ./install.sh -p erl-libs
+          su - arch ./install.sh -p erl-sw
+          su - arch ./install.sh -p erl-libs
