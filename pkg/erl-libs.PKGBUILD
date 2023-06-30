@@ -155,7 +155,7 @@ function do_process() {
 
 build() {
   local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
-  JOBS=${JOBS:- -j$(nproc)}
+  export JOBS=${JOBS:- -j$(nproc)}
 
   rm -f ../${pkgbase}*.log.*
 

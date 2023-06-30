@@ -22,16 +22,16 @@ md5sums=('SKIP')
 
 install=mqt-${pkgbase}.install
 
-pkgver() {
-  cd ${pkgbase}
-  make ver
-  #v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
-  #if [ -n "$v" ]; then
-  #  printf "%s" $v
-  #else
-  #  printf "%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-  #fi
-}
+#pkgver() {
+#  cd ${pkgbase}
+#  make ver
+#  #v=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/[^0-9\.]//g')
+#  #if [ -n "$v" ]; then
+#  #  printf "%s" $v
+#  #else
+#  #  printf "%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+#  #fi
+#}
 
 build() {
   local JOBS="$(sed -e 's/.*\(-j *[0-9]\+\).*/\1/' <<< ${MAKEFLAGS})"
@@ -50,6 +50,13 @@ build() {
   echo "BOOST_ROOT=/opt/pkg/boost/current"         >> .cmake-args
   echo "Boost_USE_STATIC_LIBS=ON"                  >> .cmake-args
   echo "BUILD_SHARED_LIBS=ON"                      >> .cmake-args
+
+  cat > .cmake-args <<EOF
+DIR:BUILD=/tmp/utxx/build
+DIR:INSTALL=/opt/pkg/utxx/${pkgver}
+ENV:BOOST_ROOT=/opt/pkg/boost/current
+ENV:BOOST_LIBRARYDIR=/opt/pkg/boost/current/lib
+EOF
 
   make bootstrap toolchain=gcc build=Debug generator=ninja ${VERBOSE} \
     PKG_ROOT_DIR=/opt/pkg \

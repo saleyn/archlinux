@@ -1,0 +1,32 @@
+# Build mqt-erl-sw and mqt-erl-libs packages on various OTP versions
+
+name: Erlang CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ci:
+    name: Build and install on ${{matrix.otp_vsn}} and ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        otp_vsn: [23.1, 24.0, 25.0, 26.0]
+        os:      [ubuntu-latest]
+
+    container:
+      image:     archlinux
+      options:   --privileged
+      volumes:
+        - /opt:/opt
+      #image: erlang:${{matrix.otp_vsn}}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ${{matrix.package}}
+        run: |
+          ./install.sh -p erl-sw
+          ./install.sh -p erl-libs
