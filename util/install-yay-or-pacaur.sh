@@ -7,7 +7,7 @@ if [ "$1" != "-r" -a $EUID -eq 0 ]; then
     exit 1
 fi
 
-for f in go p7zip perl binutils make gcc; do
+for f in go p7zip perl binutils make gcc core/debugedit; do
   if ! pacman -Q $f &>/dev/null; then
     sudo pacman --noconfirm -S $f
   fi
